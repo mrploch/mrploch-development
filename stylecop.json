@@ -15,8 +15,7 @@
       "blankLinesAfterMethodDeclaration": "require"
     },
     "readabilityRules": {
-      "allowBuiltInTypeAliases": true,
-      ""
+      "allowBuiltInTypeAliases": true
     }
   }
 }
