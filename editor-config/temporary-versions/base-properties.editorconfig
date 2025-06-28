@@ -1,0 +1,17 @@
+tab_width = 4
+trim_trailing_whitespace = true
+end_of_line = crlf
+indent_size = 4
+indent_style = space
+insert_final_newline = true
+max_line_length = 160
+max_line_lengtheditorconfig = 160
+resharper_csharp_max_line_length = 160
+
+# Resharper formatter
+resharper_formatter_off_tag = @formatter:off
+resharper_formatter_on_tag = @formatter:on
+resharper_formatter_tags_enabled = true
+
+# Order
+csharp_preferred_modifier_order = public, private, protected, internal, static, extern, abstract, virtual, new, sealed, override, readonly, unsafe, volatile, async, file, required:none

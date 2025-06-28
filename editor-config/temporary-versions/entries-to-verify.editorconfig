@@ -1,0 +1,34 @@
+# Setting 'csharp_preferred_modifier_order' Following values found
+csharp_preferred_modifier_order = public, private, protected, internal, new, static, abstract, virtual, sealed, readonly, override, extern, unsafe, volatile, async, file, required:suggestion
+csharp_preferred_modifier_order = public, private, protected, internal, static, extern, abstract, virtual, new, sealed, override, readonly, unsafe, volatile, async, file, required:none # Currently checking this one
+csharp_preferred_modifier_order = public, private, protected, internal, static, extern, new, virtual, abstract, sealed, override, readonly, unsafe, volatile, async:silent
+
+# Setting 'csharp_style_expression_bodied_operators'
+csharp_style_expression_bodied_operators = true:when_on_single_line # TODO: Check if this, original was: true:silent
+csharp_style_expression_bodied_constructors = when_on_single_line:silent # TODO: Or this value: false:silent
+
+# XML documentation headers
+dotnet_diagnostic.classdocumentationheader.severity = none # XML documentation header for class - use in apps and tests
+dotnet_diagnostic.interfacedocumentationheader.severity = none
+dotnet_diagnostic.methoddocumentationheader.severity = none
+dotnet_diagnostic.propertydocumentationheader.severity = none
+dotnet_diagnostic.sa1127.severity = none # Generic type parameters should be documented
+dotnet_diagnostic.sa1127.severity = none # Generic type parameters should be documented # TODO: Verify what it is
+dotnet_diagnostic.sa1502.severity = none # Element documentation should not be indented
+dotnet_diagnostic.sa1502.severity = none # Element documentation should not be indented
+dotnet_diagnostic.sa1600.severity = none # Elements should be documented
+dotnet_diagnostic.sa1600.severity = none # Elements should be documented
+dotnet_diagnostic.sa1623.severity = none # Property summary documentation should match accessors
+dotnet_diagnostic.sa1623.severity = none # Property summary documentation should match accessors
+resharper_exception_not_documented_highlighting = hint
+resharper_exception_not_documented_highlighting = hint
+resharper_exception_not_documented_highlighting = hint
+
+# Setting: `dotnet_style_parentheses_in_relational_binary_operators` TODO: Which one works better?
+dotnet_style_parentheses_in_relational_binary_operators = always_for_clarity:none
+dotnet_style_parentheses_in_relational_binary_operators = always_for_clarity:silent
+
+# Setting: 'resharper_initializer_braces' - TODO: Verify
+# According to docs at https://www.jetbrains.com/help/resharper/EditorConfig_CSHARP_BracesPageSchema.html#resharper_csharp_initializer_braces - this setting should be:
+# resharper_initializer_braces = next_line
+resharper_initializer_braces = pico

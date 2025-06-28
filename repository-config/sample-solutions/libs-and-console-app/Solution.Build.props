@@ -1,0 +1,9 @@
+<Project>
+    <PropertyGroup Label="Project">
+        <Product>_CHANGE_ME_</Product>
+        <PackageProjectUrl>_CHANGE_ME_</PackageProjectUrl>
+        <RepositoryUrl></RepositoryUrl>
+        <Description>Common utility libraries.</Description>
+        <SolutionRootNamespace>Ploch.Tools.DotnetProjectTools</SolutionRootNamespace>
+    </PropertyGroup>
+</Project>

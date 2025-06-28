@@ -1,0 +1,22 @@
+﻿{
+  "$schema": "https://raw.githubusercontent.com/DotNetAnalyzers/StyleCopAnalyzers/master/StyleCop.Analyzers/StyleCop.Analyzers/Settings/stylecop.schema.json",
+  "settings": {
+    "layoutRules": {
+      "newlineAtEndOfFile": "require"
+    },
+    "spacingRules": {
+      "blankLinesBetweenUsingGroups": "require",
+      "blankLinesBeforeFirstDeclaration": "require",
+      "blankLinesAfterUsingGroups": "require",
+      "blankLinesAfterNamespace": "require",
+      "blankLinesAfterTypeDeclaration": "require",
+      "blankLinesAfterFieldDeclaration": "require",
+      "blankLinesAfterPropertyDeclaration": "require",
+      "blankLinesAfterMethodDeclaration": "require"
+    },
+    "readabilityRules": {
+      "allowBuiltInTypeAliases": true,
+      ""
+    }
+  }
+}

@@ -1,0 +1,52 @@
+## Properties: 'dotnet_diagnostic.s'
+dotnet_diagnostic.s1451.severity = none
+dotnet_diagnostic.s4487.severity = none
+
+## Properties: 'dotnet_diagnostic.sa'
+dotnet_diagnostic.sa0001.severity = none # XML comment analysis is disabled due to project configuration
+dotnet_diagnostic.sa1000.severity = none # Keywords should be spaced correctly
+dotnet_diagnostic.sa1009.severity = none # Closing parenthesis should be spaced correctly
+dotnet_diagnostic.sa1010.severity = none # Square bracket should not be proceeded by a space - gives false positive for collection initializers []
+dotnet_diagnostic.sa1011.severity = none # Closing square brackets should be spaced correctly
+dotnet_diagnostic.sa1101.severity = none # Prefix local calls with this
+dotnet_diagnostic.sa1106.severity = warning
+dotnet_diagnostic.sa1116.severity = none # Split parameters should start on line after opening parenthesis
+dotnet_diagnostic.sa1127.severity = none # Generic type parameters should be documented
+dotnet_diagnostic.sa1128.severity = none # Put constructor initializers on their own line
+dotnet_diagnostic.sa1133.severity = none # Do not combine attributes
+dotnet_diagnostic.sa1200.severity = none # Using directive should be placed within namespace
+dotnet_diagnostic.sa1206.severity = none # Required modifier should appear before public - this is wrong.
+dotnet_diagnostic.sa1309.severity = none # Field names should not begin with underscore
+dotnet_diagnostic.sa1313.severity = none # Parameter names should begin with lower-case letter
+dotnet_diagnostic.sa1402.severity = none # File may only contain a single type
+dotnet_diagnostic.sa1413.severity = none # Use trailing comma
+dotnet_diagnostic.sa1500.severity = none # Braces for multi-line statements must not share line
+dotnet_diagnostic.sa1502.severity = none # element containing opening and closing braces is written completely on a single line.
+dotnet_diagnostic.sa1600.severity = none # Elements should be documented
+dotnet_diagnostic.sa1623.severity = none # Property summary documentation should match accessors
+dotnet_diagnostic.sa1633.severity = none # File should have header
+dotnet_diagnostic.sa1640.severity = none # File header should have summary
+dotnet_diagnostic.sa1649.severity = warning # File name should match first type name.
+
+## Properties: 'dotnet_diagnostic.spectre' - Spectre.Console
+dotnet_diagnostic.spectre1010.severity = warning
+dotnet_diagnostic.syslib1045.severity = warning
+
+## Properties: 'dotnet_diagnostic.faa'
+dotnet_diagnostic.faa0002.severity = warning
+
+## Properties: 'dotnet_diagnostic.IDE'
+dotnet_diagnostic.IDE0001.severity = suggestion # Simplify name
+dotnet_diagnostic.IDE0002.severity = true:error # Simplify name
+dotnet_diagnostic.IDE0018.severity = warning # Inline variable declaration
+
+## Properties: 'dotnet_diagnostic.nu'
+dotnet_diagnostic.nu1507.severity = none # Use nameof operator
+
+## Properties: 'dotnet_diagnostic.rcs'
+dotnet_diagnostic.rcs1169.severity = suggestion
+dotnet_diagnostic.RCS1196.severity = false:error # TODO: Evaluate
+
+## Properties: 'dotnet_diagnostic.s'
+dotnet_diagnostic.s1451.severity = none
+dotnet_diagnostic.s4487.severity = none

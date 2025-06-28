@@ -1,0 +1,33 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+  </PropertyGroup>
+  <Import Project="Directory.Packages.Global.props" />
+  <Import Project="Directory.Packages.Testing.props" />
+  <!--  Dependency versions for packages used in most of the projects, but feel free to remove unused ones -->
+  <ItemGroup Label="Deps-MicrosoftExtensions">
+    <PackageVersion Include="Microsoft.Extensions.Configuration.Json" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging" Version="8.0.0" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Console" Version="8.0.0" />
+    <PackageVersion Include="Ploch.Common" Version="2.0.1" />
+  </ItemGroup>
+  <ItemGroup Label="Deps-CommandLine">
+    <PackageVersion Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+    <PackageVersion Include="System.CommandLine.DragonFruit" Version="0.4.0-alpha.22272.1" />
+    <PackageVersion Include="Upstream.CommandLine" Version="2.2.1" />
+  </ItemGroup>
+    <ItemGroup>
+        <GlobalPackageReference Include="codecracker.CSharp" Version="1.1.0" />
+    <GlobalPackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="8.0.0" />
+    <GlobalPackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.8.14" />
+    <GlobalPackageReference Include="MinVer" Version="4.3.0" />
+    <GlobalPackageReference Include="SonarAnalyzer.CSharp" Version="9.14.0.81108">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </GlobalPackageReference>
+    <GlobalPackageReference Include="StyleCop.Analyzers" Version="1.1.118" />
+    <GlobalPackageReference Update="Roslynator.Analyzers" Version="4.5.0" />
+  </ItemGroup>
+</Project>

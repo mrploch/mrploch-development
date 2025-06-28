@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "repository", "repository", "{AFDF1667-2436-4530-9ACB-8D5CD3C71D52}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "repository-config", "repository-config", "{19E8CC4E-871B-4245-B317-1B3FE57DE69F}"
+	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
+		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		Directory.Build.props = Directory.Build.props
+		dotnet-tools.json = dotnet-tools.json
+		global.json = global.json
+		NuGet.config = NuGet.config
+		Directory.Packages.Testing.props = Directory.Packages.Testing.props
+		Directory.Packages.Global.props = Directory.Packages.Global.props
+		directory.packages.props = directory.packages.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{8C9E0E05-DD37-4883-9438-642719A7FFF9}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\clean-repository.ps1 = scripts\clean-repository.ps1
+		scripts\publish-nugetorg.ps1 = scripts\publish-nugetorg.ps1
+		scripts\run-sonar-build-test.ps1 = scripts\run-sonar-build-test.ps1
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{C17F8FB0-B91E-4D24-B42A-B1731F92FCC9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "src\ConsoleApp1\ConsoleApp1.csproj", "{C7C4A5BD-29B3-4017-9AC0-4ACC4BA94085}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1.Tests", "tests\ConsoleApp1.Tests\ConsoleApp1.Tests.csproj", "{8AE0D43A-CF96-42AF-AC3B-2C01D05F3E8A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+		Nuke|Any CPU = Nuke|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C7C4A5BD-29B3-4017-9AC0-4ACC4BA94085}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7C4A5BD-29B3-4017-9AC0-4ACC4BA94085}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7C4A5BD-29B3-4017-9AC0-4ACC4BA94085}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7C4A5BD-29B3-4017-9AC0-4ACC4BA94085}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7C4A5BD-29B3-4017-9AC0-4ACC4BA94085}.Nuke|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7C4A5BD-29B3-4017-9AC0-4ACC4BA94085}.Nuke|Any CPU.Build.0 = Debug|Any CPU
+		{8AE0D43A-CF96-42AF-AC3B-2C01D05F3E8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8AE0D43A-CF96-42AF-AC3B-2C01D05F3E8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8AE0D43A-CF96-42AF-AC3B-2C01D05F3E8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8AE0D43A-CF96-42AF-AC3B-2C01D05F3E8A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8AE0D43A-CF96-42AF-AC3B-2C01D05F3E8A}.Nuke|Any CPU.ActiveCfg = Debug|Any CPU
+		{8AE0D43A-CF96-42AF-AC3B-2C01D05F3E8A}.Nuke|Any CPU.Build.0 = Debug|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{19E8CC4E-871B-4245-B317-1B3FE57DE69F} = {AFDF1667-2436-4530-9ACB-8D5CD3C71D52}
+		{8C9E0E05-DD37-4883-9438-642719A7FFF9} = {AFDF1667-2436-4530-9ACB-8D5CD3C71D52}
+		{8AE0D43A-CF96-42AF-AC3B-2C01D05F3E8A} = {C17F8FB0-B91E-4D24-B42A-B1731F92FCC9}
+	EndGlobalSection
+EndGlobal

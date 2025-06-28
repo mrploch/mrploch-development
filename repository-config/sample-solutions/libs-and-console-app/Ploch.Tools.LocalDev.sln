@@ -1,0 +1,91 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ploch.Tools.DotnetProjectTools.GlobalPackageManagement", "src\dotnet\dotnet-project-tools\src\GlobalPackageManagement\Ploch.Tools.DotnetProjectTools.GlobalPackageManagement.csproj", "{A01F083B-965C-44B8-BE97-9F9C360DC619}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ploch.Tools.DotnetProjectTools.UI.ConsoleUI", "src\dotnet\dotnet-project-tools\src\UI\ConsoleUI\Ploch.Tools.DotnetProjectTools.UI.ConsoleUI.csproj", "{6D0CBAB0-2541-44A0-B204-30E13FF2219D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ploch.Tools.ServiceProfiles.Core", "src\service-profiles\src\Core\Ploch.Tools.ServiceProfiles.Core.csproj", "{D27821A4-28AC-4C80-ABA9-DEB8FB62877C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ploch.Tools.ServiceProfiles.ConsoleApp", "src\service-profiles\src\ConsoleApp\Ploch.Tools.ServiceProfiles.ConsoleApp.csproj", "{3B418363-1500-4C4D-ACE7-D2A78D9A0745}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DotnetProjectTools", "DotnetProjectTools", "{5CA6D4A6-E39F-4896-A15B-AC7039C2BCF2}"
+	ProjectSection(SolutionItems) = preProject
+		src\dotnet\dotnet-project-tools\Directory.Build.props = src\dotnet\dotnet-project-tools\Directory.Build.props
+		src\dotnet\dotnet-project-tools\Directory.Packages.props = src\dotnet\dotnet-project-tools\Directory.Packages.props
+		src\dotnet\dotnet-project-tools\Solution.Build.props = src\dotnet\dotnet-project-tools\Solution.Build.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ServiceProfiles", "ServiceProfiles", "{B3C429A2-0283-43F3-9318-D57E8F0ADF89}"
+	ProjectSection(SolutionItems) = preProject
+		src\service-profiles\Directory.Build.props = src\service-profiles\Directory.Build.props
+		src\service-profiles\Directory.Packages.props = src\service-profiles\Directory.Packages.props
+		src\service-profiles\Solution.Build.props = src\service-profiles\Solution.Build.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "repository", "repository", "{AFDF1667-2436-4530-9ACB-8D5CD3C71D52}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "repository-config", "repository-config", "{19E8CC4E-871B-4245-B317-1B3FE57DE69F}"
+	ProjectSection(SolutionItems) = preProject
+		.dockerignore = .dockerignore
+		.editorconfig = .editorconfig
+		.gitattributes = .gitattributes
+		.gitignore = .gitignore
+		Directory.Build.props = Directory.Build.props
+		dotnet-tools.json = dotnet-tools.json
+		global.json = global.json
+		NuGet.config = NuGet.config
+		Directory.Packages.Testing.props = Directory.Packages.Testing.props
+		Directory.Packages.Global.props = Directory.Packages.Global.props
+		directory.packages.props = directory.packages.props
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "scripts", "scripts", "{8C9E0E05-DD37-4883-9438-642719A7FFF9}"
+	ProjectSection(SolutionItems) = preProject
+		scripts\clean-repository.ps1 = scripts\clean-repository.ps1
+		scripts\publish-nugetorg.ps1 = scripts\publish-nugetorg.ps1
+		scripts\run-sonar-build-test.ps1 = scripts\run-sonar-build-test.ps1
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "_build", "build\_build.csproj", "{A64CA584-AEF0-43AD-858C-7E976A8981B1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+		Nuke|Any CPU = Nuke|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A64CA584-AEF0-43AD-858C-7E976A8981B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A64CA584-AEF0-43AD-858C-7E976A8981B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A64CA584-AEF0-43AD-858C-7E976A8981B1}.Nuke|Any CPU.ActiveCfg = Nuke|Any CPU
+		{A64CA584-AEF0-43AD-858C-7E976A8981B1}.Nuke|Any CPU.Build.0 = Nuke|Any CPU
+		{A01F083B-965C-44B8-BE97-9F9C360DC619}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A01F083B-965C-44B8-BE97-9F9C360DC619}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A01F083B-965C-44B8-BE97-9F9C360DC619}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A01F083B-965C-44B8-BE97-9F9C360DC619}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A01F083B-965C-44B8-BE97-9F9C360DC619}.Nuke|Any CPU.ActiveCfg = Nuke|Any CPU
+		{6D0CBAB0-2541-44A0-B204-30E13FF2219D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6D0CBAB0-2541-44A0-B204-30E13FF2219D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6D0CBAB0-2541-44A0-B204-30E13FF2219D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6D0CBAB0-2541-44A0-B204-30E13FF2219D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6D0CBAB0-2541-44A0-B204-30E13FF2219D}.Nuke|Any CPU.ActiveCfg = Nuke|Any CPU
+		{D27821A4-28AC-4C80-ABA9-DEB8FB62877C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D27821A4-28AC-4C80-ABA9-DEB8FB62877C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D27821A4-28AC-4C80-ABA9-DEB8FB62877C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D27821A4-28AC-4C80-ABA9-DEB8FB62877C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D27821A4-28AC-4C80-ABA9-DEB8FB62877C}.Nuke|Any CPU.ActiveCfg = Nuke|Any CPU
+		{3B418363-1500-4C4D-ACE7-D2A78D9A0745}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3B418363-1500-4C4D-ACE7-D2A78D9A0745}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3B418363-1500-4C4D-ACE7-D2A78D9A0745}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3B418363-1500-4C4D-ACE7-D2A78D9A0745}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3B418363-1500-4C4D-ACE7-D2A78D9A0745}.Nuke|Any CPU.ActiveCfg = Nuke|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{A01F083B-965C-44B8-BE97-9F9C360DC619} = {5CA6D4A6-E39F-4896-A15B-AC7039C2BCF2}
+		{6D0CBAB0-2541-44A0-B204-30E13FF2219D} = {5CA6D4A6-E39F-4896-A15B-AC7039C2BCF2}
+		{3B418363-1500-4C4D-ACE7-D2A78D9A0745} = {B3C429A2-0283-43F3-9318-D57E8F0ADF89}
+		{D27821A4-28AC-4C80-ABA9-DEB8FB62877C} = {B3C429A2-0283-43F3-9318-D57E8F0ADF89}
+		{19E8CC4E-871B-4245-B317-1B3FE57DE69F} = {AFDF1667-2436-4530-9ACB-8D5CD3C71D52}
+		{8C9E0E05-DD37-4883-9438-642719A7FFF9} = {AFDF1667-2436-4530-9ACB-8D5CD3C71D52}
+	EndGlobalSection
+EndGlobal
