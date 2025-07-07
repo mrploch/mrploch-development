@@ -97,10 +97,13 @@
                     <Or>
                         <HasAttribute Inherited="True" Name="NUnit.Framework.SetUpAttribute" />
                         <HasAttribute Inherited="True" Name="NUnit.Framework.TearDownAttribute" />
-                        <HasAttribute Inherited="True" Name="NUnit.Framework.TestFixtureSetUpAttribute" />
-                        <HasAttribute Inherited="True" Name="NUnit.Framework.TestFixtureTearDownAttribute" />
+                        <HasAttribute Inherited="True"
+                            Name="NUnit.Framework.TestFixtureSetUpAttribute" />
+                        <HasAttribute Inherited="True"
+                            Name="NUnit.Framework.TestFixtureTearDownAttribute" />
                         <HasAttribute Inherited="True" Name="NUnit.Framework.OneTimeSetUpAttribute" />
-                        <HasAttribute Inherited="True" Name="NUnit.Framework.OneTimeTearDownAttribute" />
+                        <HasAttribute Inherited="True"
+                            Name="NUnit.Framework.OneTimeTearDownAttribute" />
                     </Or>
                 </And>
             </Entry.Match>
@@ -204,7 +207,23 @@
                 </Or>
             </Entry.Match>
         </Entry>
-        <Entry DisplayName="All other members" >
+        <Entry DisplayName="Public Methods" Priority="200">
+            <Entry.Match>
+                <And>
+                    <Kind Is="Method" />
+                    <Access Is="Public" />
+                </And>
+            </Entry.Match>
+        </Entry>
+        <Entry DisplayName="Static Methods" Priority="200">
+            <Entry.Match>
+                <And>
+                    <Kind Is="Method" />
+                    <Static />
+                </And>
+            </Entry.Match>
+        </Entry>
+        <Entry DisplayName="All other members">
             <Entry.SortBy>
                 <Access />
             </Entry.SortBy>

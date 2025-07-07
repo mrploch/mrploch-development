@@ -182,6 +182,14 @@
                 <Static />
             </Entry.SortBy>
         </Entry>
+        <Entry DisplayName="Properties, Indexers" Priority="100">
+            <Entry.Match>
+                <Or>
+                    <Kind Is="Property" />
+                    <Kind Is="Indexer" />
+                </Or>
+            </Entry.Match>
+        </Entry>
         <Entry DisplayName="Public Static" Priority="100">
             <Entry.Match>
                 <And>
@@ -191,14 +199,15 @@
                 </And>
             </Entry.Match>
         </Entry>
-        <Entry DisplayName="Properties, Indexers">
+        <!-- <Entry DisplayName="Interface Implementations" Priority="100">
             <Entry.Match>
-                <Or>
-                    <Kind Is="Property" />
-                    <Kind Is="Indexer" />
-                </Or>
+                <And>
+                    <Kind Is="Member" />
+                    <ImplementsInterface />
+                </And>
             </Entry.Match>
-        </Entry>
+        </Entry> -->
+
         <Entry DisplayName="All other members">
             <Entry.SortBy>
                 <Access />

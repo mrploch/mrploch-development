@@ -22,15 +22,12 @@ indent_size = 2
 [{action.yml,super-linter.yml,workflow.yml}]
 indent_size = 2
 
-[{*.sarif,*.sarif,*.json,*.sarif.json}]
+[{*.sarif,*.json,*.sarif.json}]
 indent_size = 2
 
-[{*.csproj, *.xml,*.props,*.targets,*.wxi,*.wxl,*.wxs,*.DotSettings,*.slnx}]
+[*.{csproj,xml,props,targets,wxi,wxl,wxs,DotSettings,slnx,ruleset}]
 indent_size = 2
 tab_width = 2
-
-[{*.har,*.jsb2,*.jsb3,*.jsonc,*.postman_collection,*.postman_collection.json,*.postman_environment,*.postman_environment.json,.babelrc,.eslintrc,.prettierrc,.stylelintrc,.ws-context,jest.config}]
-indent_size = 2
 
 [*.{appxmanifest,asax,ascx,aspx,axaml,axml,blockshader,build,c,c++,c++m,cc,ccm,cginc,compute,config,cp,cpp,cppm,cs,cshtml,cu,cuh,cxx,cxxm,dbml,discomap,dtd,feature,fs,fsi,fsscript,fsx,fx,fxh,h,h++,hh,hlsl,hlsli,hlslinc,hp,hpp,htm,html,hxx,icc,inc,inl,ino,ipp,ixx,jsproj,lsproj,master,ml,mli,mpp,mq4,mq5,mqh,mxx,njsproj,nuspec,paml,proj,razor,resw,resx,shader,shaderFoundry,skin,StyleCop,tasks,tcc,tpp,urtshader,usf,ush,uxml,vb,vbproj,xaml,xamlx,xoml,xsd}]
 indent_size = 4
@@ -278,7 +275,7 @@ dotnet_diagnostic.faa0002.severity = warning
 
 ## Properties: 'dotnet_diagnostic.IDE'
 dotnet_diagnostic.IDE0001.severity = suggestion # Simplify name
-dotnet_diagnostic.IDE0002.severity = true:error # Simplify name
+dotnet_diagnostic.IDE0002.severity = error # Simplify name
 dotnet_diagnostic.IDE0018.severity = warning # Inline variable declaration
 
 ## Properties: 'dotnet_diagnostic.nu'
@@ -535,8 +532,8 @@ dotnet_style_qualification_for_event = false:suggestion
 dotnet_style_qualification_for_field = false:suggestion
 dotnet_style_qualification_for_method = false:suggestion
 dotnet_style_qualification_for_property = false:suggestion
-dotnet_style_require_accessibility_modifiers = for_non_interface_members:silent
 dotnet_style_readonly_field = true:suggestion # Readonly fields should be preferred over mutable fields
+dotnet_style_require_accessibility_modifiers = for_non_interface_members:warning
 
 # ReSharper settings
 resharper_align_linq_query = true
