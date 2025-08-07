@@ -1,0 +1,14 @@
+[*.cs]
+# XML Documentation headers
+dotnet_diagnostic.cs1573.severity = none # Parameter 'parameter' has no matching param tag in the XML comment on 'member' (but other parameters do)
+dotnet_diagnostic.cs1591.severity = none # Missing XML comment for publicly visible type or member 'Type_or_Member'
+dotnet_diagnostic.cs1712.severity = none # Type parameter 'type parameter' has no matching typeparam tag in the XML comment on 'type' (but other type parameters do)
+dotnet_diagnostic.classdocumentationheader.severity = none # XML documentation header for class - use in apps and tests
+dotnet_diagnostic.interfacedocumentationheader.severity = none # XML documentation header for interface - use in apps and tests
+dotnet_diagnostic.methoddocumentationheader.severity = none # XML documentation header for method - use in apps and tests
+dotnet_diagnostic.propertydocumentationheader.severity = none # XML documentation header for property - use in apps and tests
+dotnet_analyzer_diagnostic.category-documentationheader.severity = none # XML documentation header for all - use in apps and tests
+dotnet_analyzer_diagnostic.category-Documentation.severity = none # XML comment analysis is disabled due to project configuration
+
+# TODO: Validate: dotnet_diagnostic.sa0001.severity = none # XML comment analysis is disabled due to project configuration
+
