@@ -22,13 +22,31 @@ indent_size = 2
 [{*.sarif,*.sarif*.json,*.sarif.json}]
 indent_size = 2
 
-[{*.csproj,*.xml,*.props,*.DotSettings,*.slnx}]
+[*.{csproj,xml,props,targets,wxi,wxl,wxs,DotSettings,slnx,ruleset}]
 indent_size = 2
 tab_width = 2
+
+[*.{appxmanifest,asax,ascx,aspx,axaml,axml,blockshader,build,c,c++,c++m,cc,ccm,cginc,compute,config,cp,cpp,cppm,cs,cshtml,cu,cuh,cxx,cxxm,dbml,discomap,dtd,feature,fs,fsi,fsscript,fsx,fx,fxh,h,h++,hh,hlsl,hlsli,hlslinc,hp,hpp,htm,html,hxx,icc,inc,inl,ino,ipp,ixx,jsproj,lsproj,master,ml,mli,mpp,mq4,mq5,mqh,mxx,njsproj,nuspec,paml,proj,razor,resw,resx,shader,shaderFoundry,skin,StyleCop,tasks,tcc,tpp,urtshader,usf,ush,uxml,vb,vbproj,xaml,xamlx,xoml,xsd}]
+indent_size = 4
+tab_width = 4
+
+[*.less]
+indent_size = 2
+
+[*.scss]
+indent_style = space
+indent_size = 2
+
+[*.map]
+indent_style = space
+indent_size = 2
 
 [*.cs]
 tab_width = 4
 indent_size = 4
+
+resharper_csharp_max_line_length = 160
+# Or maybe: resharper_csharp_max_line_length = 180
 
 # Properties: 'csharp'
 csharp_indent_block_contents = true # csharp_indent_block_contents
@@ -651,3 +669,4 @@ resharper_wrap_list_pattern = chop_if_long
 resharper_parameter_type_can_be_enumerable_local_highlighting = suggestion
 resharper_parameter_type_can_be_enumerable_global_highlighting = suggestion
 resharper_csharp_outdent_commas = true
+resharper_both_context_call_usage_global_highlighting=none
