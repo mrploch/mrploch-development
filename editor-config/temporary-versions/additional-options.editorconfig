@@ -1,8 +1,73 @@
-## Properties: 'dotnet_diagnostic.s'
+dotnet_diagnostic.cc0001.severity = none # AlwaysUseVarAnalyzer - gives false positives for collection initializers
+dotnet_diagnostic.cc0022.severity = none # Object should be disposed - gives false positives for new using syntax
+dotnet_diagnostic.cc0031.severity = none # Verify delegate is not null - gives false positives
+dotnet_diagnostic.cc0091.severity = none # Make method static - gives false positives and marks methods that use instance members
+dotnet_diagnostic.cc0108.severity = warning
+dotnet_diagnostic.cs1591.severity = warning # Missing XML comment for publicly visible type or member 'Type_or_Member'
+dotnet_diagnostic.cs8597.severity = error # Thrown value may be null.
+dotnet_diagnostic.cs8600.severity = error # Converting null literal or possible null value to non-nullable type.
+dotnet_diagnostic.cs8601.severity = error # Possible null reference assignment to non-nullable field.
+dotnet_diagnostic.cs8602.severity = error # Dereference of a possibly null reference.
+dotnet_diagnostic.cs8603.severity = error # Possible null reference return.
+dotnet_diagnostic.cs8604.severity = error # Possible null reference argument for parameter.
+dotnet_diagnostic.cs8605.severity = error # Unboxing a possibly null value.
+dotnet_diagnostic.cs8607.severity = error # A possible null value may not be used for a type marked with [NotNull] or [DisallowNull]
+dotnet_diagnostic.cs8608.severity = error # Nullability of reference types in type doesn't match overridden member.
+dotnet_diagnostic.cs8609.severity = error # Nullability of reference types in return type doesn't match overridden member.
+dotnet_diagnostic.cs8610.severity = error # Nullability of reference types in type parameter doesn't match overridden member.
+dotnet_diagnostic.cs8611.severity = error # Nullability of reference types in type parameter doesn't match partial method declaration.
+dotnet_diagnostic.cs8612.severity = error # Nullability of reference types in type doesn't match implicitly implemented member.
+dotnet_diagnostic.cs8613.severity = error # Nullability of reference types in return type doesn't match implicitly implemented member.
+dotnet_diagnostic.cs8614.severity = error # Nullability of reference types in type of parameter doesn't match implicitly implemented member.
+dotnet_diagnostic.cs8615.severity = error # Nullability of reference types in type doesn't match implemented member.
+dotnet_diagnostic.cs8616.severity = error # Nullability of reference types in return type doesn't match implemented member.
+dotnet_diagnostic.cs8617.severity = error # Nullability of reference types in type of parameter doesn't match implicitly implemented member.
+dotnet_diagnostic.cs8618.severity = error # Non-nullable field is uninitialized. Consider declaring as nullable.
+dotnet_diagnostic.cs8619.severity = error # Nullability of reference types in value doesn't match target type.
+dotnet_diagnostic.cs8620.severity = error # Argument cannot be used for parameter due to differences in the nullability of reference types.
+dotnet_diagnostic.cs8621.severity = error # Nullability of reference types in return type doesn't match delegate type parameter.
+dotnet_diagnostic.cs8622.severity = error # Nullability of reference types in type of parameter doesn't match delegate type parameter.
+dotnet_diagnostic.cs8624.severity = error # Argument cannot be used for parameter due to differences in the nullability of reference types.
+dotnet_diagnostic.cs8625.severity = error # Cannot convert null literal to non-nullable reference type.
+dotnet_diagnostic.cs8629.severity = error # Nullable value type may be null.
+dotnet_diagnostic.cs8631.severity = error # The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match constraint type.
+dotnet_diagnostic.cs8633.severity = error # Nullability in constraints for type parameter of method doesn't match the constraints for type parameter of interface method. Consider using an explicit interface implementation instead.
+dotnet_diagnostic.cs8634.severity = error # The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match 'class' constraint.
+dotnet_diagnostic.cs8643.severity = error # Nullability of reference types in explicit interface specifier doesn't match interface implemented by the type.
+dotnet_diagnostic.cs8644.severity = error # Type does not implement interface member. Nullability of reference types in interface implemented by the base type doesn't match.
+dotnet_diagnostic.cs8645.severity = error # Member is already listed in the interface list on type with different nullability of reference types.
+dotnet_diagnostic.cs8655.severity = error # The switch expression does not handle some null inputs (it is not exhaustive).
+dotnet_diagnostic.cs8667.severity = error # Partial method declarations have inconsistent nullability in constraints for type parameter.
+dotnet_diagnostic.cs8714.severity = error # The type cannot be used as type parameter in the generic type or method. Nullability of type argument doesn't match 'notnull' constraint.
+dotnet_diagnostic.cs8762.severity = error # Parameter must have a non-null value when exiting.
+dotnet_diagnostic.cs8763.severity = error # A method marked [DoesNotReturn] should not return.
+dotnet_diagnostic.cs8763.severity = error # A method marked [DoesNotReturn] should not return.
+dotnet_diagnostic.cs8764.severity = error # Nullability of return type doesn't match overridden member (possibly because of nullability attributes).
+dotnet_diagnostic.cs8765.severity = error # Nullability of type of parameter doesn't match overridden member (possibly because of nullability attributes).
+dotnet_diagnostic.cs8766.severity = error # Nullability of reference types in return type of doesn't match implicitly implemented member (possibly because of nullability attributes).
+dotnet_diagnostic.cs8767.severity = error # Nullability of reference types in type of parameter of doesn't match implicitly implemented member (possibly because of nullability attributes).
+dotnet_diagnostic.cs8768.severity = error # Nullability of reference types in return type doesn't match implemented member (possibly because of nullability attributes).
+dotnet_diagnostic.cs8769.severity = error # Nullability of reference types in type of parameter doesn't match implemented member (possibly because of nullability attributes).
+dotnet_diagnostic.cs8770.severity = error # Method lacks [DoesNotReturn] annotation to match implemented or overridden member.
+dotnet_diagnostic.cs8770.severity = error # Method lacks [DoesNotReturn] annotation to match implemented or overridden member.
+dotnet_diagnostic.cs8774.severity = error # Member must have a non-null value when exiting.
+dotnet_diagnostic.cs8775.severity = error # Member must have a non-null value when exiting.
+dotnet_diagnostic.cs8776.severity = error # Member cannot be used in this attribute.
+dotnet_diagnostic.cs8777.severity = error # Parameter must have a non-null value when exiting.
+dotnet_diagnostic.cs8819.severity = error # Nullability of reference types in return type doesn't match partial method declaration.
+dotnet_diagnostic.cs8824.severity = error # Parameter must have a non-null value when exiting because parameter is non-null.
+dotnet_diagnostic.cs8825.severity = error # Return value must be non-null because parameter is non-null.
+dotnet_diagnostic.cs8847.severity = error # The switch expression does not handle some null inputs (it is not exhaustive). However, a pattern with a 'when' clause might successfully match this value.
+dotnet_diagnostic.cs9264.severity = warning # Non-nullable property must contain a non-null value when exiting constructor. Consider adding the 'required' modifier, or declaring the property as nullable, or adding '[field: MaybeNull, AllowNull]' attributes.*
+dotnet_diagnostic.faa0002.severity = warning
+dotnet_diagnostic.IDE0001.severity = suggestion # Simplify name
+dotnet_diagnostic.IDE0002.severity = true:error # Simplify name
+dotnet_diagnostic.IDE0018.severity = warning # Inline variable declaration
+dotnet_diagnostic.nu1507.severity = none # Use nameof operator
+dotnet_diagnostic.rcs1169.severity = suggestion
+dotnet_diagnostic.RCS1196.severity = false:error # TODO: Evaluate
 dotnet_diagnostic.s1451.severity = none
 dotnet_diagnostic.s4487.severity = none
-
-## Properties: 'dotnet_diagnostic.sa'
 dotnet_diagnostic.sa0001.severity = none # XML comment analysis is disabled due to project configuration
 dotnet_diagnostic.sa1000.severity = none # Keywords should be spaced correctly
 dotnet_diagnostic.sa1009.severity = none # Closing parenthesis should be spaced correctly
@@ -27,26 +92,5 @@ dotnet_diagnostic.sa1623.severity = none # Property summary documentation should
 dotnet_diagnostic.sa1633.severity = none # File should have header
 dotnet_diagnostic.sa1640.severity = none # File header should have summary
 dotnet_diagnostic.sa1649.severity = warning # File name should match first type name.
-
-## Properties: 'dotnet_diagnostic.spectre' - Spectre.Console
 dotnet_diagnostic.spectre1010.severity = warning
 dotnet_diagnostic.syslib1045.severity = warning
-
-## Properties: 'dotnet_diagnostic.faa'
-dotnet_diagnostic.faa0002.severity = warning
-
-## Properties: 'dotnet_diagnostic.IDE'
-dotnet_diagnostic.IDE0001.severity = suggestion # Simplify name
-dotnet_diagnostic.IDE0002.severity = true:error # Simplify name
-dotnet_diagnostic.IDE0018.severity = warning # Inline variable declaration
-
-## Properties: 'dotnet_diagnostic.nu'
-dotnet_diagnostic.nu1507.severity = none # Use nameof operator
-
-## Properties: 'dotnet_diagnostic.rcs'
-dotnet_diagnostic.rcs1169.severity = suggestion
-dotnet_diagnostic.RCS1196.severity = false:error # TODO: Evaluate
-
-## Properties: 'dotnet_diagnostic.s'
-dotnet_diagnostic.s1451.severity = none
-dotnet_diagnostic.s4487.severity = none
