@@ -12,16 +12,10 @@ resharper_formatter_off_tag = @formatter:off
 resharper_formatter_on_tag = @formatter:on
 resharper_formatter_tags_enabled = true
 
-[{*.har,*.jsb2,*.jsb3,*.jsonc,*.postman_collection,*.postman_collection.json,*.postman_environment,*.postman_environment.json,.babelrc,.eslintrc,.prettierrc,.stylelintrc,.ws-context,jest.config}]
+[{*.sarif,*.json,*.sarif.json*.har,*.jsb2,*.jsb3,*.jsonc,*.postman_collection,*.postman_collection.json,*.postman_environment,*.postman_environment.json,.babelrc,.eslintrc,.prettierrc,.stylelintrc,.ws-context,jest.config}]
 indent_size = 2
 
-[{*.yaml,*.yml}]
-indent_size = 2
-
-[{action.yml,super-linter.yml,workflow.yml}]
-indent_size = 2
-
-[{*.sarif,*.json,*.sarif.json}]
+[{*.yaml,*.yml,action.yml,super-linter.yml,workflow.ym}]
 indent_size = 2
 
 [*.{csproj,xml,props,targets,wxi,wxl,wxs,DotSettings,slnx,ruleset}]
