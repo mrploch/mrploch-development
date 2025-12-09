@@ -1,11 +1,11 @@
-﻿<Project>
+<Project>
     <ItemGroup>
         <PackageVersion Include="Serilog" Version="4.3.0" />
         <PackageVersion Include="Serilog.Enrichers.Thread" Version="4.0.0" />
-        <PackageVersion Include="Serilog.Extensions.Hosting" Version="9.0.0" />
-        <PackageVersion Include="Serilog.Extensions.Logging" Version="9.0.2" />
-        <PackageVersion Include="Serilog.Settings.Configuration" Version="9.0.0" />
-        <PackageVersion Include="Serilog.Sinks.Console" Version="6.0.0" />
+        <PackageVersion Include="Serilog.Extensions.Hosting" Version="10.0.0" />
+        <PackageVersion Include="Serilog.Extensions.Logging" Version="10.0.0" />
+        <PackageVersion Include="Serilog.Settings.Configuration" Version="10.0.0" />
+        <PackageVersion Include="Serilog.Sinks.Console" Version="6.1.1" />
         <PackageVersion Include="Serilog.Sinks.File" Version="7.0.0" />
         <PackageVersion Include="Serilog.Sinks.SpectreConsole" Version="0.3.3" />
     </ItemGroup>

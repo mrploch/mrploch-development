@@ -1,0 +1,7 @@
+<Project>
+    <ItemGroup>
+        <PackageVersion Include="Ploch.Data.GenericRepository" Version="2.1.0" />
+        <PackageVersion Include="Ploch.Data.GenericRepository.EFCore" Version="2.1.0" />
+        <PackageVersion Include="Ploch.Data.Model" Version="2.1.0" />
+    </ItemGroup>
+</Project>
