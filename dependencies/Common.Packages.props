@@ -1,0 +1,44 @@
+<Project>
+    <ItemGroup>
+        <PackageVersion Include="Agoda.Analyzers" Version="1.1.156" />
+        <PackageVersion Include="Ardalis.Result" Version="10.1.0" />
+        <PackageVersion Include="Ardalis.Result.AspNetCore" Version="10.1.0" />
+        <PackageVersion Include="Ardalis.Specification" Version="9.3.1" />
+        <PackageVersion Include="Ardalis.Specification.EntityFrameworkCore" Version="9.3.1" />
+        <PackageVersion Include="AsyncAwaitBestPractices" Version="9.0.0" />
+        <PackageVersion Include="AutoMapper" Version="14.0.0" />
+        <PackageVersion Include="Autofac.Extensions.DependencyInjection" Version="10.0.0" />
+        <PackageVersion Include="CaseConverter" Version="2.0.1" />
+        <PackageVersion Include="CaseExtensions" Version="1.1.0" />
+        <PackageVersion Include="CommunityToolkit.Mvvm" Version="8.4.0" />
+        <PackageVersion Include="coverlet.msbuild" Version="6.0.4" />
+        <PackageVersion Include="CsvHelper" Version="33.1.0" />
+        <PackageVersion Include="Dawn.Guard" Version="1.12.0" />
+        <PackageVersion Include="docfx.console" Version="2.59.4" />
+        <PackageVersion Include="ErrorProne.NET.CoreAnalyzers" Version="0.1.2" />
+        <PackageVersion Include="FastEndpoints" Version="5.34.0" />
+        <PackageVersion Include="FastEndpoints.Swagger" Version="5.34.0" />
+        <PackageVersion Include="IDisposableAnalyzers" Version="4.0.8" />
+        <PackageVersion Include="JetBrains.Annotations" Version="2025.2.4" />
+        <PackageVersion Include="Microsoft.AspNetCore.Mvc.ViewFeatures" Version="2.3.0" />
+        <PackageVersion Include="Microsoft.CSharp" Version="4.7.0" />
+        <PackageVersion Include="Microsoft.Maui.Controls.Xaml" Version="9.0.90" />
+        <PackageVersion Include="Newtonsoft.Json" Version="13.0.4" />
+        <PackageVersion Include="NSwag.CodeGeneration.CSharp" Version="14.2.0" />
+        <PackageVersion Include="Philips.CodeAnalysis.DuplicateCodeAnalyzer" Version="1.6.4" />
+        <PackageVersion Include="PrimaryConstructorAnalyzer" Version="1.0.6" />
+        <PackageVersion Include="ReflectionAnalyzers" Version="0.3.1" />
+        <PackageVersion Include="ResharperCodeContractNullability" Version="2.0.2">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageVersion>
+        <PackageVersion Include="Swashbuckle.AspNetCore.SwaggerGen" Version="7.2.0" />
+        <PackageVersion Include="System.ComponentModel" Version="4.3.0" />
+        <PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />
+        <PackageVersion Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
+        <PackageVersion Include="System.IO.Abstractions" Version="22.1.0" />
+        <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.6.3" />
+        <PackageVersion Include="Vanara.SystemServices" Version="4.2.1" />
+        <PackageVersion Include="WmiLight" Version="6.13.0" />
+    </ItemGroup>
+</Project>

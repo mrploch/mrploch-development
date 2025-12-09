@@ -669,4 +669,4 @@ resharper_wrap_list_pattern = chop_if_long
 resharper_parameter_type_can_be_enumerable_local_highlighting = suggestion
 resharper_parameter_type_can_be_enumerable_global_highlighting = suggestion
 resharper_csharp_outdent_commas = true
-resharper_both_context_call_usage_global_highlighting=none
+resharper_both_context_call_usage_global_highlighting = none
