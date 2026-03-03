@@ -36,9 +36,8 @@
         <PackageVersion Include="System.ComponentModel" Version="4.3.0" />
         <PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />
         <PackageVersion Include="System.ComponentModel.TypeConverter" Version="4.3.0" />
-        <PackageVersion Include="System.IO.Abstractions" Version="22.1.0" />
         <PackageVersion Include="System.Threading.Tasks.Extensions" Version="4.6.3" />
         <PackageVersion Include="Vanara.SystemServices" Version="4.2.1" />
-        <PackageVersion Include="WmiLight" Version="6.13.0" />
+        <PackageVersion Include="WmiLight" Version="6.16.0" />
     </ItemGroup>
 </Project>
