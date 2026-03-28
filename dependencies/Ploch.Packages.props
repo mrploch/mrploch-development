@@ -1,7 +1,24 @@
 <Project>
+    <PropertyGroup>
+        <PlochPackagesVersion>3.0.0</PlochPackagesVersion>
+    </PropertyGroup>
     <ItemGroup>
-        <PackageVersion Include="Ploch.Data.GenericRepository" Version="2.1.0" />
-        <PackageVersion Include="Ploch.Data.GenericRepository.EFCore" Version="2.1.0" />
-        <PackageVersion Include="Ploch.Data.Model" Version="2.1.0" />
+        <PackageVersion Include="Ploch.Common.AppServices" Version="$(PlochPackagesVersion)" />
+        <PackageVersion Include="Ploch.Data.GenericRepository" Version="$(PlochPackagesVersion)" />
+        <PackageVersion Include="Ploch.Data.GenericRepository.EFCore" Version="$(PlochPackagesVersion)" />
+        <PackageVersion Include="Ploch.Data.Model" Version="$(PlochPackagesVersion)" />
+        <PackageVersion Include="Ploch.Data.EFCore" Version="$(PlochPackagesVersion)" />
+        <PackageVersion Include="Ploch.Data.EFCore.IntegrationTesting" Version="$(PlochPackagesVersion)" />
+        <PackageVersion Include="Ploch.Data.EFCore.SqLite" Version="$(PlochPackagesVersion)" />
+        <PackageVersion Include="Ploch.Data.EFCore.SqlServer" Version="$(PlochPackagesVersion)" />
+        <PackageVersion Include="Ploch.Data.GenericRepository.EFCore.IntegrationTesting" Version="$(PlochPackagesVersion)" />
+        <PackageVersion Include="Ploch.Common" Version="$(PlochPackagesVersion)" />
+        <PackageVersion Include="Ploch.Common.DependencyInjection" Version="$(PlochPackagesVersion)" />
+        <PackageVersion Include="Ploch.Common.Net9" Version="$(PlochPackagesVersion)" />
+        <PackageVersion Include="Ploch.Common.DataAnnotations" Version="$(PlochPackagesVersion)" />
+        <PackageVersion Include="Ploch.TestingSupport" Version="$(PlochPackagesVersion)" />
+        <PackageVersion Include="Ploch.TestingSupport.Xunit" Version="$(PlochPackagesVersion)" />
+        <PackageVersion Include="Ploch.TestingSupport.FluentAssertions" Version="$(PlochPackagesVersion)" />
     </ItemGroup>
 </Project>
+

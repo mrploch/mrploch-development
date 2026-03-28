@@ -362,6 +362,13 @@ MigrationBackup/
 *.bak
 coverage.xml
 
+# AI configs
+.cursorrules
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+SPGo.json
+
 # Rider specific files
 
 # Default ignored files
