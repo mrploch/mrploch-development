@@ -1,13 +1,14 @@
 Windows Registry Editor Version 5.00
 
 ; Add "Open with Claude Code" to folder context menu
+; NOTE: Update the Icon paths below to match your local icon file location.
 [HKEY_CLASSES_ROOT\Directory\shell\OpenWithClaudeCode]
 @="Open with Claude Code"
 "Icon"="C:\\DevNet\\github\\open-with-claude-code\\claude.ico,0"
 "Position"="Top"
 
 [HKEY_CLASSES_ROOT\Directory\shell\OpenWithClaudeCode\command]
-@="cmd.exe /c \"cd /d \"%1\" && claude\""
+@="cmd.exe /c cd /d \"%1\" && claude"
 
 ; Add "Open with Claude Code" to folder background context menu
 [HKEY_CLASSES_ROOT\Directory\Background\shell\OpenWithClaudeCode]
@@ -16,4 +17,4 @@ Windows Registry Editor Version 5.00
 "Position"="Top"
 
 [HKEY_CLASSES_ROOT\Directory\Background\shell\OpenWithClaudeCode\command]
-@="cmd.exe /c \"cd /d \"%v\" && claude\""
+@="cmd.exe /c cd /d \"%V\" && claude"

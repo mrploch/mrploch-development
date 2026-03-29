@@ -388,9 +388,8 @@ codestream.xml
 /.idea/**/GitLink.xml
 /.idea/**/misc.xml
 /.idea/**/vcs.xml
-/.idea/**/.idea/dataSources.xml
-/.idea/**/.idea/inspectionProfiles/Project_Default.xml
-/.idea/.idea.Ploch.Common.Data/.idea/vcs.xml
 **/.idea/codestream.xml
 **/.idea/vcs.xml
+**/.idea/dataSources.xml
+**/.idea/inspectionProfiles/Project_Default.xml
 

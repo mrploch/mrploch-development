@@ -22,8 +22,10 @@
                 <HasMember>
                     <And>
                         <Kind Is="Method" />
-                        <HasAttribute Inherited="True" Name="Xunit.FactAttribute" />
-                        <HasAttribute Inherited="True" Name="Xunit.TheoryAttribute" />
+                        <Or>
+                            <HasAttribute Inherited="True" Name="Xunit.FactAttribute" />
+                            <HasAttribute Inherited="True" Name="Xunit.TheoryAttribute" />
+                        </Or>
                     </And>
                 </HasMember>
             </And>
@@ -63,8 +65,10 @@
             <Entry.Match>
                 <And>
                     <Kind Is="Method" />
-                    <HasAttribute Name="Xunit.FactAttribute" />
-                    <HasAttribute Name="Xunit.TheoryAttribute" />
+                    <Or>
+                        <HasAttribute Name="Xunit.FactAttribute" />
+                        <HasAttribute Name="Xunit.TheoryAttribute" />
+                    </Or>
                 </And>
             </Entry.Match>
             <Entry.SortBy>
@@ -82,9 +86,11 @@
                     <HasMember>
                         <And>
                             <Kind Is="Method" />
-                            <HasAttribute Name="NUnit.Framework.TestAttribute" />
-                            <HasAttribute Name="NUnit.Framework.TestCaseAttribute" />
-                            <HasAttribute Name="NUnit.Framework.TestCaseSourceAttribute" />
+                            <Or>
+                                <HasAttribute Name="NUnit.Framework.TestAttribute" />
+                                <HasAttribute Name="NUnit.Framework.TestCaseAttribute" />
+                                <HasAttribute Name="NUnit.Framework.TestCaseSourceAttribute" />
+                            </Or>
                         </And>
                     </HasMember>
                 </Or>
@@ -113,9 +119,11 @@
             <Entry.Match>
                 <And>
                     <Kind Is="Method" />
-                    <HasAttribute Name="NUnit.Framework.TestAttribute" />
-                    <HasAttribute Name="NUnit.Framework.TestCaseAttribute" />
-                    <HasAttribute Name="NUnit.Framework.TestCaseSourceAttribute" />
+                    <Or>
+                        <HasAttribute Name="NUnit.Framework.TestAttribute" />
+                        <HasAttribute Name="NUnit.Framework.TestCaseAttribute" />
+                        <HasAttribute Name="NUnit.Framework.TestCaseSourceAttribute" />
+                    </Or>
                 </And>
             </Entry.Match>
             <Entry.SortBy>
