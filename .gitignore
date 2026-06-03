@@ -400,3 +400,8 @@ codestream.xml
 **/.idea/codestream.xml
 **/.idea/vcs.xml
 
+# AI Config - temporarily ignored
+.claude
+.cursorrules
+.contextstream
+.vscode/changelists.json

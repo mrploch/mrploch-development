@@ -262,14 +262,14 @@ dotnet_diagnostic.sa1127.severity = none
 dotnet_diagnostic.sa1200.severity = none
 dotnet_diagnostic.sa1128.severity = none
 dotnet_diagnostic.sa1133.severity = none
-dotnet_diagnostic.sa1502.severity = none
+dotnet_diagnostic.sa1502.severity = none A C# element containing opening and closing braces is written completely on a single line.
+
 dotnet_diagnostic.sa1600.severity = none
 dotnet_diagnostic.sa1623.severity = none
 dotnet_diagnostic.sa1633.severity = none
 dotnet_diagnostic.sa1640.severity = none
 dotnet_diagnostic.sa1649.severity = warning # File name should match first type name.
-dotnet_diagnostic.sa1206.severity = none # required should appear before modifiers, still broken in sonar
-
+dotnet_diagnostic.sa1206.severity = none # Required modifier should appear before public - this is wrong.
 dotnet_diagnostic.nu1507.severity = none
 
 # ReSharper properties
@@ -277,7 +277,7 @@ resharper_blank_lines_around_single_line_auto_property = 1
 resharper_csharp_empty_block_style = together
 resharper_csharp_keep_blank_lines_in_code = 1
 resharper_csharp_keep_blank_lines_in_declarations = 1
-resharper_csharp_max_line_length = 150
+resharper_csharp_max_line_length = 170
 resharper_csharp_place_type_constraints_on_same_line = true
 resharper_csharp_wrap_parameters_style = chop_if_long
 resharper_keep_existing_declaration_block_arrangement = false
