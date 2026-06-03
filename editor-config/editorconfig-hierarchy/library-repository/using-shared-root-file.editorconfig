@@ -1,83 +1,3 @@
-root = true
-
-[*]
-indent_style = space
-insert_final_newline = true
-max_line_length = 160
-max_line_lengtheditorconfig = 160
-trim_trailing_whitespace = true
-end_of_line = crlf
-
-# Resharper formatter
-resharper_formatter_off_tag = @formatter:off
-resharper_formatter_on_tag = @formatter:on
-resharper_formatter_tags_enabled = true
-
-# ReSharper properties
-resharper_xml_indent_size = 2
-resharper_xml_tab_width = 2
-
-[{*.har,*.jsb2,*.jsb3,*.jsonc,*.postman_collection,*.postman_collection.json,*.postman_environment,*.postman_environment.json,.babelrc,.eslintrc,.prettierrc,.stylelintrc,.ws-context,jest.config}]
-indent_size = 2
-
-[{*.yaml,*.yml}]
-indent_size = 2
-
-[{action.yml,super-linter.yml,workflow.yml}]
-indent_size = 2
-
-[{*.sarif,*.json,*.sarif.json}]
-indent_size = 2
-
-[*.{csproj,xml,props,targets,wxi,wxl,wxs,DotSettings,slnx,ruleset}]
-indent_size = 2
-tab_width = 2
-
-[*.{appxmanifest,asax,ascx,aspx,axaml,axml,blockshader,build,c,c++,c++m,cc,ccm,cginc,compute,config,cp,cpp,cppm,cs,cshtml,cu,cuh,cxx,cxxm,dbml,discomap,dtd,feature,fs,fsi,fsscript,fsx,fx,fxh,h,h++,hh,hlsl,hlsli,hlslinc,hp,hpp,htm,html,hxx,icc,inc,inl,ino,ipp,ixx,jsproj,lsproj,master,ml,mli,mpp,mq4,mq5,mqh,mxx,njsproj,nuspec,paml,proj,razor,resw,resx,shader,shaderFoundry,skin,StyleCop,tasks,tcc,tpp,urtshader,usf,ush,uxml,vb,vbproj,xaml,xamlx,xoml,xsd}]
-indent_size = 4
-tab_width = 4
-
-[{*.bash,*.sh,*.zsh}]
-indent_style = space
-indent_size = 2
-
-[{*.pb,*.textproto,*.txtpb}]
-indent_style = space
-indent_size = 2
-
-[{*.har,*.jsb2,*.jsb3,*.json,*.jsonc,*.nswag,*.postman_collection,*.postman_collection.json,*.postman_environment,*.postman_environment.json,*.sonarlint/*.json,.babelrc,.eslintrc,.prettierrc,.stylelintrc,.ws-context,connectedMode.json,jest.config}]
-indent_style = space
-indent_size = 2
-
-[{*.slnLaunch.user,*.user}]
-indent_style = space
-indent_size = 2
-
-[http-client.cookies]
-indent_style = tab
-tab_width = 4
-
-[{*.sarif,*.sarif*.json,*.sarif.json}]
-indent_style = space
-indent_size = 2
-
-[*.{appxmanifest,asax,ascx,aspx,axaml,blockshader,build,c,c++,c++m,cc,ccm,cginc,compute,cp,cpp,cppm,cs,cshtml,cu,cuh,cxx,cxxm,dtd,feature,fs,fsi,fsscript,fsx,fx,fxh,h,h++,hh,hlsl,hlsli,hlslinc,hp,hpp,hxx,icc,inc,inl,ino,ipp,ixx,master,ml,mli,mpp,mq4,mq5,mqh,mxx,nuspec,paml,razor,resw,resx,shaderFoundry,skin,tcc,tpp,urtshader,usf,ush,vb,xaml,xamlx,xoml,xsd}]
-indent_style = space
-indent_size = 4
-tab_width = 4
-
-
-[*.less]
-indent_size = 2
-
-[*.scss]
-indent_style = space
-indent_size = 2
-
-[*.map]
-indent_style = space
-indent_size = 2
-
 [*.cs]
 tab_width = 4
 indent_size = 4
@@ -136,6 +56,7 @@ csharp_space_between_method_call_parameter_list_parentheses = false
 csharp_space_between_method_declaration_empty_parameter_list_parentheses = false
 csharp_space_between_method_declaration_name_and_open_parenthesis = false
 csharp_space_between_method_declaration_parameter_list_parentheses = false
+csharp_space_between_parentheses = false
 csharp_space_between_square_brackets = false
 
 # Properties: 'csharp_style'
@@ -156,7 +77,6 @@ csharp_style_expression_bodied_indexers = when_on_single_line:silent
 csharp_style_expression_bodied_lambdas = when_on_single_line:silent
 csharp_style_expression_bodied_local_functions = when_on_single_line:silent
 csharp_style_expression_bodied_methods = when_on_single_line:silent
-csharp_style_expression_bodied_operators = true:when_on_single_line
 csharp_style_expression_bodied_operators = when_on_single_line:silent
 csharp_style_expression_bodied_properties = when_on_single_line:silent
 
@@ -204,12 +124,12 @@ dotnet_code_quality.points_to_analysis_kind = Complete
 # Properties: 'dotnet_diagnostic'
 
 ## XML Documentation headers
-dotnet_diagnostic.classdocumentationheader.severity = none # XML documentation header for class - use in apps and tests
-dotnet_diagnostic.interfacedocumentationheader.severity = none
-dotnet_diagnostic.methoddocumentationheader.severity = none
-dotnet_diagnostic.propertydocumentationheader.severity = none
-dotnet_analyzer_diagnostic.category-documentationheader.severity = none
-dotnet_analyzer_diagnostic.category-documentation.severity = none
+dotnet_diagnostic.classdocumentationheader.severity = warning # XML documentation header for class - use in apps and tests
+dotnet_diagnostic.interfacedocumentationheader.severity = warning
+dotnet_diagnostic.methoddocumentationheader.severity = warning
+dotnet_diagnostic.propertydocumentationheader.severity = warning
+dotnet_analyzer_diagnostic.category-documentationheader.severity = warning
+dotnet_analyzer_diagnostic.category-Documentation.severity = warning
 
 ## Properties: 'dotnet_diagnostic.ca'
 dotnet_diagnostic.ca1001.severity = warning # Types that own disposable fields should be disposable
@@ -242,6 +162,7 @@ dotnet_diagnostic.cc0022.severity = none # Object should be disposed - gives fal
 dotnet_diagnostic.cc0031.severity = none # Verify delegate is not null - gives false positives
 dotnet_diagnostic.cc0091.severity = none # Make method static - gives false positives and marks methods that use instance members
 dotnet_diagnostic.cc0108.severity = warning
+dotnet_diagnostic.cc0057.severity = none # Unused parameter - gives false positives
 
 ## Properties: 'dotnet_diagnostic.cs'
 ### Nullability
@@ -307,9 +228,9 @@ dotnet_diagnostic.cs8770.severity = error # Method lacks [DoesNotReturn] annotat
 dotnet_diagnostic.faa0002.severity = warning
 
 ## Properties: 'dotnet_diagnostic.IDE'
-dotnet_diagnostic.ide0001.severity = suggestion # Simplify name
-dotnet_diagnostic.ide0002.severity = error # Simplify name
-dotnet_diagnostic.ide0018.severity = warning # Inline variable declaration
+dotnet_diagnostic.IDE0001.severity = suggestion # Simplify name
+dotnet_diagnostic.IDE0002.severity = error # Simplify name
+dotnet_diagnostic.IDE0018.severity = warning # Inline variable declaration
 
 ## Properties: 'dotnet_diagnostic.nu'
 dotnet_diagnostic.nu1507.severity = none # Use nameof operator
@@ -407,13 +328,14 @@ dotnet_naming_rule.private_static_fields_rule.resharper_description = Static fie
 dotnet_naming_rule.private_static_fields_rule.resharper_guid = f9fce829-e6f4-4cb2-80f1-5497c44f51df
 dotnet_naming_rule.private_static_fields_rule.resharper_style = _ + aaBb, AaBb
 dotnet_naming_rule.private_static_fields_rule.severity = warning
-dotnet_naming_rule.private_static_fields_rule.style = pascal_case
+dotnet_naming_rule.private_static_fields_rule.style = lower_camel_case_style
 dotnet_naming_rule.private_static_fields_rule.symbols = private_static_fields_symbols
 dotnet_naming_rule.private_static_readonly_rule.import_to_resharper = True
 dotnet_naming_rule.private_static_readonly_rule.resharper_description = Static readonly fields (private)
 dotnet_naming_rule.private_static_readonly_rule.resharper_guid = 15b5b1f1-457c-4ca6-b278-5615aedc07d3
+dotnet_naming_rule.private_static_readonly_rule.resharper_style = _ + aaBb, AaBb
 dotnet_naming_rule.private_static_readonly_rule.severity = warning
-dotnet_naming_rule.private_static_readonly_rule.style = pascal_case
+dotnet_naming_rule.private_static_readonly_rule.style = upper_camel_case_style
 dotnet_naming_rule.private_static_readonly_rule.symbols = private_static_readonly_symbols
 dotnet_naming_rule.static_field_should_be_pascal_case_rule.import_to_resharper = True
 dotnet_naming_rule.static_field_should_be_pascal_case_rule.resharper_description = static_field_should_be_pascal_case
@@ -439,24 +361,6 @@ dotnet_naming_rule.types_should_be_pascal_case_rule.symbols = types_should_be_pa
 dotnet_naming_rule.types_should_be_pascal_case.severity = warning
 dotnet_naming_rule.types_should_be_pascal_case.style = pascal_case
 dotnet_naming_rule.types_should_be_pascal_case.symbols = types
-dotnet_naming_rule.local_constants_rule.import_to_resharper = True
-dotnet_naming_rule.local_constants_rule.resharper_description = Local constants
-dotnet_naming_rule.local_constants_rule.resharper_guid = a4f433b8-abcd-4e55-a08f-82e78cef0f0c
-dotnet_naming_rule.private_instance_fields_rule_1.import_to_resharper = True
-dotnet_naming_rule.private_instance_fields_rule_1.resharper_description = Instance fields (private)
-dotnet_naming_rule.private_instance_fields_rule_1.resharper_guid = 4a98fdf6-7d98-4f5a-afeb-ea44ad98c70c
-dotnet_naming_rule.local_constants_rule.import_to_resharper = True
-dotnet_naming_rule.local_constants_rule.resharper_description = Local constants
-dotnet_naming_rule.local_constants_rule.resharper_guid = a4f433b8-abcd-4e55-a08f-82e78cef0f0c
-dotnet_naming_rule.local_constants_rule.severity = none
-dotnet_naming_rule.local_constants_rule.style = pascal_case
-dotnet_naming_rule.local_constants_rule.symbols = local_constants_symbols
-dotnet_naming_rule.private_instance_fields_rule_1.import_to_resharper = True
-dotnet_naming_rule.private_instance_fields_rule_1.resharper_description = Instance fields (private)
-dotnet_naming_rule.private_instance_fields_rule_1.resharper_guid = 4a98fdf6-7d98-4f5a-afeb-ea44ad98c70c
-dotnet_naming_rule.private_instance_fields_rule_1.severity = none
-dotnet_naming_rule.private_instance_fields_rule_1.style = lower_camel_case_style
-dotnet_naming_rule.private_instance_fields_rule_1.symbols = private_instance_fields_symbols_1
 
 # Properties: 'dotnet_naming_style'
 dotnet_naming_style.begins_with_i.capitalization = pascal_case
@@ -546,19 +450,6 @@ dotnet_naming_symbols.types_should_be_pascal_case_symbols.resharper_required_mod
 dotnet_naming_symbols.types.applicable_accessibilities = public, internal, private, protected, protected_internal, private_protected
 dotnet_naming_symbols.types.applicable_kinds = class, struct, interface, enum
 dotnet_naming_symbols.types.required_modifiers =
-dotnet_naming_symbols.local_constants_symbols.resharper_applicable_kinds = local_constant
-dotnet_naming_symbols.local_constants_symbols.resharper_required_modifiers = any
-dotnet_naming_symbols.private_instance_fields_symbols_1.resharper_applicable_kinds = field, readonly_field
-dotnet_naming_symbols.private_instance_fields_symbols_1.resharper_required_modifiers = instance
-dotnet_naming_symbols.local_constants_symbols.applicable_accessibilities = *
-dotnet_naming_symbols.local_constants_symbols.applicable_kinds = local
-dotnet_naming_symbols.local_constants_symbols.required_modifiers = const
-dotnet_naming_symbols.local_constants_symbols.resharper_applicable_kinds = local_constant
-dotnet_naming_symbols.local_constants_symbols.resharper_required_modifiers = any
-dotnet_naming_symbols.private_instance_fields_symbols_1.applicable_accessibilities = private
-dotnet_naming_symbols.private_instance_fields_symbols_1.applicable_kinds = field
-dotnet_naming_symbols.private_instance_fields_symbols_1.resharper_applicable_kinds = field, readonly_field
-dotnet_naming_symbols.private_instance_fields_symbols_1.resharper_required_modifiers = instance
 
 # Various settings
 dotnet_remove_unnecessary_suppression_exclusions = none
@@ -625,7 +516,7 @@ resharper_arrange_this_qualifier_highlighting = hint
 resharper_arrange_type_member_modifiers_highlighting = hint
 resharper_arrange_type_modifiers_highlighting = hint
 
-resharper_async_apostle_configure_await_highlighting_highlighting = hint
+resharper_async_apostle_configure_await_highlighting = hint
 
 resharper_autodetect_indent_settings = true
 
@@ -644,7 +535,7 @@ resharper_braces_redundant = false
 resharper_built_in_type_reference_style_for_member_access_highlighting = warning
 resharper_built_in_type_reference_style_highlighting = hint
 
-resharper_c_sharp_warnings_cs8618_cs9264_highlighting = error # TODO: Check this: 'c_sharp' vs 'csharp' (it's correct: https://www.jetbrains.com/help/resharper/Reference__Code_Inspections_CSHARP.html#BestPractice)
+resharper_c_sharp_warnings_cs8618_cs9264_highlighting = error # 'c_sharp' is correct for this inspection (not 'csharp'): https://www.jetbrains.com/help/resharper/Reference__Code_Inspections_CSHARP.html#BestPractice
 
 resharper_csharp_align_first_arg_by_paren = true
 resharper_csharp_allow_far_alignment = true
@@ -718,7 +609,7 @@ resharper_redundant_base_qualifier_highlighting = warning
 resharper_show_autodetect_configure_formatting_tip = false
 resharper_suggest_var_or_type_built_in_types_highlighting = suggestion
 resharper_suggest_var_or_type_elsewhere_highlighting = suggestion
-resharper_suggest_var_or_type_simple_types_highlighting = warning
+resharper_suggest_var_or_type_simple_types_highlighting = suggestion
 resharper_too_many_chained_references_highlighting = hint
 resharper_use_heuristics_for_body_style = true
 resharper_use_indent_from_vs = false
@@ -735,90 +626,3 @@ resharper_parameter_type_can_be_enumerable_global_highlighting = suggestion
 resharper_csharp_outdent_commas = true
 
 resharper_class_with_virtual_members_never_inherited_global_highlighting = hint
-
-csharp_space_after_cast = false
-resharper_space_within_catch_parentheses = false
-resharper_space_within_foreach_parentheses = false
-resharper_space_within_if_parentheses = false
-
-resharper_space_between_typecast_parentheses = false
-resharper_space_within_fixed_parentheses = false
-resharper_space_within_for_parentheses = false
-resharper_space_within_lock_parentheses = false
-resharper_space_within_switch_parentheses = false
-resharper_space_within_using_parentheses = false
-resharper_space_within_while_parentheses = false
-
-csharp_space_after_keywords_in_control_flow_statements = true
-# csharp_space_between_parentheses = control_flow_statements, type_casts
-
-# ReSharper properties
-resharper_align_multiline_expression = true
-resharper_apply_on_completion = true
-resharper_cpp_keep_existing_arrangement = true
-resharper_csharp_brace_style = next_line
-resharper_csharp_insert_final_newline = true
-resharper_csharp_keep_existing_embedded_arrangement = true
-resharper_csharp_keep_existing_enum_arrangement = false
-resharper_csharp_keep_existing_expr_member_arrangement = true
-resharper_csharp_keep_existing_initializer_arrangement = true
-resharper_csharp_keep_existing_list_patterns_arrangement = true
-resharper_csharp_keep_existing_property_patterns_arrangement = true
-resharper_csharp_wrap_before_first_type_parameter_constraint = true
-resharper_csharp_wrap_before_ternary_opsigns = false
-resharper_csharp_wrap_extends_list_style = chop_if_long
-resharper_force_attribute_style = join
-resharper_formatter_off_tag = @formatter:off
-resharper_formatter_on_tag = @formatter:on
-resharper_formatter_tags_enabled = true
-resharper_keep_existing_switch_expression_arrangement = false
-resharper_prefer_wrap_around_eq = always_if_multiline
-resharper_wrap_chained_binary_patterns = chop_if_long
-
-# ReSharper inspection severities
-resharper_arguments_style_other_highlighting = warning
-resharper_async_void_method_highlighting = warning
-resharper_collection_never_updated_local_highlighting = none
-resharper_compare_non_constrained_generic_with_null_highlighting = warning
-resharper_complex_condition_expression_highlighting = suggestion
-resharper_enforce_do_while_statement_braces_highlighting = warning
-resharper_enforce_fixed_statement_braces_highlighting = warning
-resharper_enforce_foreach_statement_braces_highlighting = warning
-resharper_enforce_for_statement_braces_highlighting = warning
-resharper_enforce_if_statement_braces_highlighting = warning
-resharper_enforce_lock_statement_braces_highlighting = warning
-resharper_enforce_using_statement_braces_highlighting = warning
-resharper_enforce_while_statement_braces_highlighting = warning
-resharper_flag_argument_highlighting = hint
-resharper_function_complexity_overflow_highlighting = warning
-resharper_heap_view_boxing_allocation_highlighting = none
-resharper_heap_view_closure_allocation_highlighting = none
-resharper_heap_view_delegate_allocation_highlighting = none
-resharper_heap_view_object_allocation_highlighting = none
-resharper_heap_view_possible_boxing_allocation_highlighting = none
-resharper_inconsistent_naming_highlighting = none
-resharper_incorrect_blank_lines_near_braces_highlighting = warning
-resharper_local_function_can_be_made_static_highlighting = suggestion
-resharper_local_suppression_highlighting = hint
-resharper_loop_can_be_partly_converted_to_query_highlighting = hint
-resharper_missing_annotation_highlighting = hint
-resharper_missing_blank_lines_highlighting = warning
-resharper_not_allowed_annotation_highlighting = hint
-resharper_redundant_blank_lines_highlighting = warning
-resharper_redundant_captured_context_highlighting = hint
-resharper_redundant_enum_case_label_for_default_section_highlighting = warning
-resharper_replace_async_with_task_return_highlighting = warning
-resharper_return_type_can_be_enumerable_global_highlighting = suggestion
-resharper_return_type_can_be_enumerable_local_highlighting = suggestion
-resharper_separate_control_transfer_statement_highlighting = suggestion
-resharper_tabs_are_disallowed_highlighting = warning
-resharper_unnecessary_whitespace_highlighting = warning
-resharper_unused_member_global_highlighting = warning
-resharper_use_nameof_expression_for_part_of_the_string_highlighting = warning
-resharper_use_object_or_collection_initializer_highlighting = hint
-resharper_use_positional_deconstruction_pattern_highlighting = warning
-
-[*.{appxmanifest,axaml,axml,config,csproj,dbml,discomap,dtd,jsproj,lsproj,njsproj,nuspec,paml,proj,props,StyleCop,targets,tasks,vbproj,xaml,xamlx,xml,xoml,xsd}]
-indent_style = space
-indent_size = 2
-tab_width = 2
