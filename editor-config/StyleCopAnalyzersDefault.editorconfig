@@ -126,6 +126,7 @@ dotnet_diagnostic.SA1413.severity = warning # Use trailing comma in multi-line i
 # StyleCop.Analyzers.LayoutRules
 dotnet_diagnostic.SA1500.severity = warning # Braces for multi-line statements should not share line
 dotnet_diagnostic.SA1501.severity = warning # Statement should not be on a single line
+dotnet_diagnostic.SA1502.severity = none # Element should not be on a single line
 
 dotnet_diagnostic.SA1503.severity = warning # Braces should not be omitted
 dotnet_diagnostic.SA1504.severity = warning # All accessors should be single-line or multi-line

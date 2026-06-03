@@ -187,10 +187,10 @@ The following MCP servers are configured for local Codex CLI runs (`~/.codex/con
 
 ### Output paths
 
-```
+```text
 <repo>/.github/copilot-instructions.md
 <repo>/.github/instructions/<name>.instructions.md
-<repo>/.github/copilot/mcp.json    (cloud variant only, if MCP enabled)
+<repo>/.github/copilot-mcp.recommended.md    (advisory only — Coding Agent MCP is configured via the GitHub Settings UI, never committed)
 ```
 
 ### `.github/copilot-instructions.md`

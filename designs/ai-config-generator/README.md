@@ -14,7 +14,7 @@ A single canonical source of AI-agent configuration in `mrploch-development/` (r
 - `GEMINI.md` (Gemini Code Assist / Gemini CLI)
 - `.cursor/rules/*.mdc` (Cursor — local IDE *and* Background Agents)
 - `.windsurf/rules/*.md` (Windsurf / Codeium)
-- `.mcp.json` / `.cursor/mcp.json` / `.github/copilot/mcp/` (per-agent MCP server configs, fanned out from one canonical list)
+- `.mcp.json` / `.cursor/mcp.json` (committed per-agent MCP server configs, fanned out from one canonical list). GitHub Copilot is **advisory-only** — its Coding Agent MCP is set via the GitHub Settings UI, so the generator emits `.github/copilot-mcp.recommended.md` rather than a committed config.
 
 Issue #8 settles **how** canonical content reaches each repo (junctions + bootstrap script). This design adds the **what** — a translation layer so the canonical content is authored *once* in a tool-agnostic form and emitted into the heterogeneous filenames each agent insists on.
 
