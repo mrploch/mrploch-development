@@ -1,0 +1,83 @@
+name: build
+
+# Starting-point CI for a Ploch.App repository.
+#
+# This app references the MrPloch libraries as RELATIVE SOURCE PROJECTS, so CI must check the
+# sibling repositories out alongside it. The sibling repos are checked out under the same parent
+# folder as this repo (matching the local-dev layout that $(PlochSiblingsRoot) expects).
+#
+# Requirements:
+#   - A secret `MRPLOCH_REPOS_TOKEN`: a PAT (or fine-grained token) with read access to the
+#     mrploch repositories. The default GITHUB_TOKEN cannot read other repositories.
+#
+# If you later switch to consuming the MrPloch libraries as NuGet packages, replace the sibling
+# checkouts with a single checkout + a GitHub Packages restore source.
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out this repository
+        uses: actions/checkout@v4
+        with:
+          path: mrploch/app
+
+      - name: Check out ploch-common
+        uses: actions/checkout@v4
+        with:
+          repository: mrploch/ploch-common
+          path: mrploch/ploch-common
+          token: ${{ secrets.MRPLOCH_REPOS_TOKEN }}
+
+      - name: Check out ploch-data
+        uses: actions/checkout@v4
+        with:
+          repository: mrploch/ploch-data
+          path: mrploch/ploch-data
+          token: ${{ secrets.MRPLOCH_REPOS_TOKEN }}
+
+      - name: Check out ploch-commandline
+        uses: actions/checkout@v4
+        with:
+          repository: mrploch/ploch-commandline
+          path: mrploch/ploch-commandline
+          token: ${{ secrets.MRPLOCH_REPOS_TOKEN }}
+
+      - name: Check out mrploch-development
+        uses: actions/checkout@v4
+        with:
+          repository: mrploch/mrploch-development
+          path: mrploch/mrploch-development
+          token: ${{ secrets.MRPLOCH_REPOS_TOKEN }}
+
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore
+        working-directory: mrploch/app
+        run: dotnet restore Ploch.App.slnx
+        env:
+          MRPLOCH_GITHUB_PACKAGES_TOKEN: ${{ secrets.MRPLOCH_REPOS_TOKEN }}
+
+      - name: Build
+        working-directory: mrploch/app
+        run: dotnet build Ploch.App.slnx -c Release --no-restore
+
+      - name: Test
+        working-directory: mrploch/app
+        run: dotnet test Ploch.App.slnx -c Release --no-build --verbosity normal

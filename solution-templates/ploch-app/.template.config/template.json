@@ -1,0 +1,59 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Kris Ploch",
+  "classifications": [ "Common", "Console", "Data", "MrPloch" ],
+  "identity": "Ploch.App.SolutionTemplate",
+  "name": "MrPloch application (Spectre console + EF Core data layer)",
+  "shortName": "ploch-app",
+  "sourceName": "Ploch.App",
+  "defaultName": "Ploch.App",
+  "preferNameDirectory": true,
+  "tags": {
+    "language": "C#",
+    "type": "solution"
+  },
+  "symbols": {
+    "siblingsRoot": {
+      "type": "parameter",
+      "datatype": "string",
+      "description": "Relative path (with a trailing backslash) from the generated repository root to the parent folder that holds the side-by-side ploch-* sibling repositories. The default assumes the new repo is cloned directly beside ploch-common, ploch-data, ploch-commandline and mrploch-development.",
+      "defaultValue": "..\\",
+      "replaces": "__PLOCH_SIBLINGS_ROOT__",
+      "fileRename": "__PLOCH_SIBLINGS_ROOT__"
+    },
+    "skipRestore": {
+      "type": "parameter",
+      "datatype": "bool",
+      "description": "Skip the automatic 'dotnet restore' run after the project is created.",
+      "defaultValue": "false"
+    }
+  },
+  "sources": [
+    {
+      "exclude": [
+        "**/.template.config/**",
+        "**/bin/**",
+        "**/obj/**",
+        "**/*.db",
+        "**/*.db-shm",
+        "**/*.db-wal",
+        "**/.vs/**",
+        "**/.idea/**",
+        "**/Migrations/**"
+      ]
+    }
+  ],
+  "primaryOutputs": [
+    { "path": "Ploch.App.slnx" }
+  ],
+  "postActions": [
+    {
+      "id": "restore",
+      "condition": "(!skipRestore)",
+      "description": "Restore NuGet packages required by this project.",
+      "manualInstructions": [ { "text": "Run 'dotnet restore'" } ],
+      "actionId": "210D431B-A78B-4D2F-B762-4ED3E3EA9025",
+      "continueOnError": true
+    }
+  ]
+}

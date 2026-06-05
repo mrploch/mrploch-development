@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>$(TargetFrameworkVersion)</TargetFramework>
+    </PropertyGroup>
+    <ItemGroup>
+        <ProjectReference Include="$(PlochSiblingsRoot)ploch-data\src\Data.Model\Ploch.Data.Model.csproj" />
+    </ItemGroup>
+</Project>

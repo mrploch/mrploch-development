@@ -1,0 +1,52 @@
+<Project>
+    <PropertyGroup Label="Siblings">
+        <!--
+            Root folder that holds the side-by-side ploch-* sibling repositories.
+            The default assumes this repository is cloned directly beside ploch-common,
+            ploch-data, ploch-commandline and mrploch-development (the standard MrPloch layout).
+            Override at build time with -p:PlochSiblingsRoot=<absolute-path-with-trailing-slash>
+            if your clone layout differs.
+        -->
+        <PlochSiblingsRoot Condition="'$(PlochSiblingsRoot)' == ''">$(MSBuildThisFileDirectory)__PLOCH_SIBLINGS_ROOT__</PlochSiblingsRoot>
+    </PropertyGroup>
+
+    <PropertyGroup Label="Org">
+        <Authors>Kris Ploch</Authors>
+        <Company>Ploch</Company>
+        <Copyright>Kris Ploch $([System.DateTime]::Now.Year)</Copyright>
+    </PropertyGroup>
+
+    <PropertyGroup Label="Build">
+        <TargetFrameworkVersion>net10.0</TargetFrameworkVersion>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+        <IsTestProject>$(MSBuildProjectName.EndsWith('Tests'))</IsTestProject>
+        <!-- This is an application repository, not a NuGet library: no packaging, no XML doc files. -->
+        <IsPackable>false</IsPackable>
+        <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+        <GenerateDocumentationFile>false</GenerateDocumentationFile>
+    </PropertyGroup>
+
+    <PropertyGroup Label="CodeQuality">
+        <AnalysisLevel>latest-Recommended</AnalysisLevel>
+        <EnableNETAnalyzers>true</EnableNETAnalyzers>
+        <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+        <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+        <!--
+            SA1106 / SA1516: false positives on primary-constructor syntax and top-level statements.
+            SA0001: XML comment analysis is intentionally disabled (this is an app, not a documented library).
+            SA1210: using-directive alphabetical ordering cannot be guaranteed once the namespace token
+            is renamed by 'dotnet new' (a 'Contoso.Billing.*' using sorts differently from the template's
+            'Ploch.App.*'). Suppressed for the generated sample code; remove it once you settle your usings.
+        -->
+        <NoWarn>$(NoWarn);SA1106;SA1516;SA0001;SA1210</NoWarn>
+        <!--
+            MSB3277: the sibling ploch-* libraries are referenced as source projects, some of which
+            target netstandard2.0/net8.0 and reference older Microsoft.Bcl.AsyncInterfaces contract
+            versions. These unify cleanly to the in-box assembly on net10.0, so the conflict is benign;
+            downgrade it to a message to keep the build output clean.
+        -->
+        <MSBuildWarningsAsMessages>$(MSBuildWarningsAsMessages);MSB3277</MSBuildWarningsAsMessages>
+    </PropertyGroup>
+</Project>

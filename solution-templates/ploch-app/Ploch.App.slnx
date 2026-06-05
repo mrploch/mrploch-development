@@ -1,0 +1,12 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/Model/Ploch.App.Model.csproj" />
+    <Project Path="src/Data/Ploch.App.Data.csproj" />
+    <Project Path="src/Data.SQLite/Ploch.App.Data.SQLite.csproj" />
+    <Project Path="src/Data.SqlServer/Ploch.App.Data.SqlServer.csproj" />
+    <Project Path="src/ConsoleApp/Ploch.App.ConsoleApp.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/IntegrationTests/Ploch.App.IntegrationTests.csproj" />
+  </Folder>
+</Solution>
