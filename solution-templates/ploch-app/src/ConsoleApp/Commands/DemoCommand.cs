@@ -16,6 +16,9 @@ internal sealed class DemoCommand(AppDbContext dbContext, IUnitOfWork unitOfWork
 {
     public override async Task<int> ExecuteAsync(CommandContext context, CancellationToken cancellationToken)
     {
+        // EnsureCreated lets this sample run with zero setup: the template ships the migration
+        // tooling (src/Data.SQLite, src/Data.SqlServer) but no migrations by default. For a real
+        // app, generate migrations there and call `dbContext.Database.MigrateAsync()` instead.
         await dbContext.Database.EnsureCreatedAsync(cancellationToken);
 
         var authorRepository = unitOfWork.Repository<Author, int>();
