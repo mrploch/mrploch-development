@@ -11,7 +11,7 @@ command reference — it is the canonical agent guide for this repository.
 
 - MrPloch libraries are referenced as **relative source projects** anchored to
   `$(PlochSiblingsRoot)`; clone `ploch-common`, `ploch-data`, `ploch-commandline` and
-  `mrploch-development` as siblings, or override `-p:PlochSiblingsRoot=<path\>`.
+  `mrploch-development` as siblings, or override `-p:PlochSiblingsRoot=<path-with-trailing-slash>`.
 - Build: `dotnet build Ploch.App.slnx` · Test: `dotnet test Ploch.App.slnx` ·
   Run: `dotnet run --project src/ConsoleApp -- demo`.
 - EF Core migrations live in `src/Data.SQLite` / `src/Data.SqlServer` (SQLite is the default).

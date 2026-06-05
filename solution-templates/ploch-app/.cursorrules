@@ -6,7 +6,7 @@ See CLAUDE.md for the canonical, full guidance.
 
 - MrPloch libraries are relative source-project references anchored to `$(PlochSiblingsRoot)`.
   Clone ploch-common, ploch-data, ploch-commandline and mrploch-development as siblings, or
-  override `-p:PlochSiblingsRoot=<path\>`.
+  override `-p:PlochSiblingsRoot=<path-with-trailing-slash>`.
 - Entities (src/Model) implement Ploch.Data.Model interfaces — no ad-hoc Id/Name/Title.
 - One internal IEntityTypeConfiguration<T> per entity in src/Data/Configurations; set OnDelete explicitly.
 - Inject the narrowest repository interface; use IUnitOfWork for multi-entity transactions.

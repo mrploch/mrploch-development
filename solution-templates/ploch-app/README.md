@@ -7,7 +7,7 @@ generic repository / Unit of Work stack and the
 
 ## Layout
 
-```
+```text
 src/
   Model/          # Domain entity POCOs (implement Ploch.Data.Model interfaces)
   Data/           # AppDbContext, entity configurations, audit-timestamp handling
@@ -23,7 +23,7 @@ tests/
 This repository references the MrPloch libraries as **relative source-project references**,
 so the following repositories must be cloned **side by side** under the same parent folder:
 
-```
+```text
 <parent>/
   ploch-common/
   ploch-data/

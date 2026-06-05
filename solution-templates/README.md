@@ -11,7 +11,7 @@
 
 ### What you get
 
-```
+```text
 src/
   Model/          # Domain entity POCOs (Ploch.Data.Model interfaces)
   Data/           # AppDbContext + entity configurations + audit handling

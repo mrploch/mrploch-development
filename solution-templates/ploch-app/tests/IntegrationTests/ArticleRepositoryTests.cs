@@ -12,12 +12,20 @@ public class ArticleRepositoryTests : GenericRepositoryDataIntegrationTest<AppDb
     {
         var repository = CreateReadWriteRepositoryAsync<Article, int>();
 
-        var article = new Article { Title = "Test Article", Description = "A test article", Contents = "Some content" };
+        var article = new Article
+        {
+            Title = "Test Article",
+            Description = "A test article",
+            Contents = "Some content"
+        };
 
         await repository.AddAsync(article);
         await DbContext.SaveChangesAsync();
 
-        var saved = await repository.GetByIdAsync(article.Id);
+        // Verify via a fresh root DbContext so the assertion proves the row was persisted and
+        // re-hydrated from the database, not served from the writer's change tracker.
+        await using var verifyContext = CreateRootDbContext();
+        var saved = await verifyContext.Articles.FindAsync(article.Id);
 
         saved.Should().NotBeNull();
         saved!.Title.Should().Be("Test Article");
@@ -28,29 +36,31 @@ public class ArticleRepositoryTests : GenericRepositoryDataIntegrationTest<AppDb
     [Fact]
     public async Task AddAsync_should_persist_article_with_categories_and_tags()
     {
-        var articleRepository = CreateReadWriteRepositoryAsync<Article, int>();
-        var categoryRepository = CreateReadWriteRepositoryAsync<ArticleCategory, int>();
-        var tagRepository = CreateReadWriteRepositoryAsync<ArticleTag, int>();
+        var articleRepo = CreateReadWriteRepositoryAsync<Article, int>();
+        var categoryRepo = CreateReadWriteRepositoryAsync<ArticleCategory, int>();
+        var tagRepo = CreateReadWriteRepositoryAsync<ArticleTag, int>();
 
         var category = new ArticleCategory { Name = "Test Category" };
-        await categoryRepository.AddAsync(category);
+        await categoryRepo.AddAsync(category);
 
         var tag = new ArticleTag { Name = "Test Tag", Description = "A test tag" };
-        await tagRepository.AddAsync(tag);
+        await tagRepo.AddAsync(tag);
 
         var article = new Article
         {
             Title = "Test Article",
             Categories = new List<ArticleCategory> { category },
-            Tags = new List<ArticleTag> { tag },
+            Tags = new List<ArticleTag> { tag }
         };
 
-        await articleRepository.AddAsync(article);
+        await articleRepo.AddAsync(article);
         await DbContext.SaveChangesAsync();
 
-        var saved = await articleRepository.GetByIdAsync(
-            article.Id,
-            onDbSet: query => query.Include(a => a.Categories).Include(a => a.Tags));
+        await using var verifyContext = CreateRootDbContext();
+        var saved = await verifyContext.Articles
+                                       .Include(a => a.Categories)
+                                       .Include(a => a.Tags)
+                                       .FirstOrDefaultAsync(a => a.Id == article.Id);
 
         saved.Should().NotBeNull();
         saved!.Categories.Should().HaveCount(1);
@@ -62,24 +72,63 @@ public class ArticleRepositoryTests : GenericRepositoryDataIntegrationTest<AppDb
     [Fact]
     public async Task AddAsync_should_persist_hierarchical_categories()
     {
-        var categoryRepository = CreateReadWriteRepositoryAsync<ArticleCategory, int>();
+        var categoryRepo = CreateReadWriteRepositoryAsync<ArticleCategory, int>();
 
         var grandchild = new ArticleCategory { Name = "Grandchild" };
-        var child = new ArticleCategory { Name = "Child", Children = new List<ArticleCategory> { grandchild } };
-        var parent = new ArticleCategory { Name = "Parent", Children = new List<ArticleCategory> { child } };
+        var child = new ArticleCategory
+        {
+            Name = "Child",
+            Children = new List<ArticleCategory> { grandchild }
+        };
+        var parent = new ArticleCategory
+        {
+            Name = "Parent",
+            Children = new List<ArticleCategory> { child }
+        };
 
-        await categoryRepository.AddAsync(parent);
+        await categoryRepo.AddAsync(parent);
         await DbContext.SaveChangesAsync();
 
-        var savedParent = await categoryRepository.GetByIdAsync(
-            parent.Id,
-            onDbSet: query => query.Include(c => c.Children!).ThenInclude(c => c.Children!));
+        await using var verifyContext = CreateRootDbContext();
+        var savedParent = await verifyContext.ArticleCategories
+                                             .Include(c => c.Children!)
+                                             .ThenInclude(c => c.Children!)
+                                             .FirstOrDefaultAsync(c => c.Id == parent.Id);
 
         savedParent.Should().NotBeNull();
         savedParent!.Children.Should().HaveCount(1);
         savedParent.Children!.First().Name.Should().Be("Child");
         savedParent.Children!.First().Children.Should().HaveCount(1);
         savedParent.Children!.First().Children!.First().Name.Should().Be("Grandchild");
+    }
+
+    [Fact]
+    public async Task AddAsync_should_persist_article_with_properties()
+    {
+        var articleRepo = CreateReadWriteRepositoryAsync<Article, int>();
+
+        var article = new Article
+        {
+            Title = "Article with Properties",
+            Properties = new List<ArticleProperty>
+            {
+                new() { Name = "ReadingTime", Value = "5 minutes" },
+                new() { Name = "Difficulty", Value = "Easy" }
+            }
+        };
+
+        await articleRepo.AddAsync(article);
+        await DbContext.SaveChangesAsync();
+
+        await using var verifyContext = CreateRootDbContext();
+        var saved = await verifyContext.Articles
+                                       .Include(a => a.Properties)
+                                       .FirstOrDefaultAsync(a => a.Id == article.Id);
+
+        saved.Should().NotBeNull();
+        saved!.Properties.Should().HaveCount(2);
+        saved.Properties.Should().Contain(p => p.Name == "ReadingTime" && p.Value == "5 minutes");
+        saved.Properties.Should().Contain(p => p.Name == "Difficulty" && p.Value == "Easy");
     }
 
     [Fact]
@@ -94,6 +143,7 @@ public class ArticleRepositoryTests : GenericRepositoryDataIntegrationTest<AppDb
 
         await DbContext.SaveChangesAsync();
 
+        // GetPageAsync is the read operation under test, so its return value is the observable output.
         var page = await repository.GetPageAsync(1, 5);
 
         page.Should().HaveCount(5);
@@ -109,7 +159,8 @@ public class ArticleRepositoryTests : GenericRepositoryDataIntegrationTest<AppDb
         await repository.AddAsync(new Article { Title = "C# Advanced" });
         await DbContext.SaveChangesAsync();
 
-        var csharpArticles = await repository.GetAllAsync(onDbSet: query => query.Where(a => a.Title.Contains("C#")));
+        var csharpArticles = await repository.GetAllAsync(
+            onDbSet: q => q.Where(a => a.Title.Contains("C#")));
 
         csharpArticles.Should().HaveCount(2);
         csharpArticles.Should().OnlyContain(a => a.Title.Contains("C#"));

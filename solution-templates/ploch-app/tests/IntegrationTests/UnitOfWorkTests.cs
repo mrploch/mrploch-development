@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Ploch.App.Data;
 using Ploch.App.Model;
 using Ploch.Data.GenericRepository.EFCore.IntegrationTesting;
@@ -11,19 +12,21 @@ public class UnitOfWorkTests : GenericRepositoryDataIntegrationTest<AppDbContext
     {
         var unitOfWork = CreateUnitOfWork();
 
-        var authorRepository = unitOfWork.Repository<Author, int>();
-        var articleRepository = unitOfWork.Repository<Article, int>();
+        var authorRepo = unitOfWork.Repository<Author, int>();
+        var articleRepo = unitOfWork.Repository<Article, int>();
 
         var author = new Author { Name = "Test Author" };
-        await authorRepository.AddAsync(author);
+        await authorRepo.AddAsync(author);
 
         var article = new Article { Title = "Test Article", Author = author };
-        await articleRepository.AddAsync(article);
+        await articleRepo.AddAsync(article);
 
         await unitOfWork.CommitAsync();
 
-        var savedAuthor = await authorRepository.GetByIdAsync(author.Id);
-        var savedArticle = await articleRepository.GetByIdAsync(article.Id);
+        // Verify both rows landed in the database via a fresh root DbContext, not the writer's context.
+        await using var verifyContext = CreateRootDbContext();
+        var savedAuthor = await verifyContext.Authors.FindAsync(author.Id);
+        var savedArticle = await verifyContext.Articles.FindAsync(article.Id);
 
         savedAuthor.Should().NotBeNull();
         savedArticle.Should().NotBeNull();
@@ -34,10 +37,10 @@ public class UnitOfWorkTests : GenericRepositoryDataIntegrationTest<AppDbContext
     public async Task CommitAsync_should_update_audit_modified_time_on_update()
     {
         var unitOfWork = CreateUnitOfWork();
-        var articleRepository = unitOfWork.Repository<Article, int>();
+        var articleRepo = unitOfWork.Repository<Article, int>();
 
         var article = new Article { Title = "Original Title" };
-        await articleRepository.AddAsync(article);
+        await articleRepo.AddAsync(article);
         await unitOfWork.CommitAsync();
 
         var createdTime = article.CreatedTime;
@@ -46,29 +49,37 @@ public class UnitOfWorkTests : GenericRepositoryDataIntegrationTest<AppDbContext
         await Task.Delay(50);
 
         article.Title = "Updated Title";
-        await articleRepository.UpdateAsync(article);
+        await articleRepo.UpdateAsync(article);
         await unitOfWork.CommitAsync();
 
-        article.ModifiedTime.Should().NotBeNull();
-        article.ModifiedTime.Should().BeAfter(createdTime!.Value);
+        // Confirm the audit timestamp was advanced and persisted by reloading from the database.
+        await using var verifyContext = CreateRootDbContext();
+        var saved = await verifyContext.Articles.FindAsync(article.Id);
+
+        saved.Should().NotBeNull();
+        saved!.Title.Should().Be("Updated Title");
+        saved.ModifiedTime.Should().NotBeNull();
+        saved.ModifiedTime.Should().BeOnOrAfter(createdTime!.Value);
     }
 
     [Fact]
     public async Task DeleteAsync_should_remove_entity()
     {
         var unitOfWork = CreateUnitOfWork();
-        var tagRepository = unitOfWork.Repository<ArticleTag, int>();
+        var tagRepo = unitOfWork.Repository<ArticleTag, int>();
 
         var tag = new ArticleTag { Name = "Temporary Tag" };
-        await tagRepository.AddAsync(tag);
+        await tagRepo.AddAsync(tag);
         await unitOfWork.CommitAsync();
 
         var tagId = tag.Id;
 
-        await tagRepository.DeleteAsync(tag);
+        await tagRepo.DeleteAsync(tag);
         await unitOfWork.CommitAsync();
 
-        var deleted = await tagRepository.GetByIdAsync(tagId);
+        // Verify removal via a fresh root DbContext rather than the repository under test.
+        await using var verifyContext = CreateRootDbContext();
+        var deleted = await verifyContext.ArticleTags.FindAsync(tagId);
         deleted.Should().BeNull();
     }
 }

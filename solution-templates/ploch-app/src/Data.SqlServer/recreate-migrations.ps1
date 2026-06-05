@@ -1,4 +1,10 @@
+$ErrorActionPreference = 'Stop'
 Push-Location $PSScriptRoot
-Remove-Item Migrations -Force -Confirm:$false -Recurse -ErrorAction SilentlyContinue
-dotnet ef migrations add Initial
-Pop-Location
+try {
+    Remove-Item Migrations -Force -Recurse -Confirm:$false -ErrorAction SilentlyContinue
+    dotnet ef migrations add Initial
+    if ($LASTEXITCODE -ne 0) { throw "dotnet ef migrations add failed (exit code $LASTEXITCODE)" }
+}
+finally {
+    Pop-Location
+}
