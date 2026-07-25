@@ -1,0 +1,18 @@
+<Project>
+    <PropertyGroup>
+        <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+        <!-- See Directory.Build.props for an explanation of PlochSiblingsRoot. -->
+        <PlochSiblingsRoot Condition="'$(PlochSiblingsRoot)' == ''">$(MSBuildThisFileDirectory)__PLOCH_SIBLINGS_ROOT__</PlochSiblingsRoot>
+    </PropertyGroup>
+
+    <!-- Shared, centrally-managed package versions, imported from the mrploch-development sibling repo. -->
+    <Import Project="$(PlochSiblingsRoot)mrploch-development\dependencies\Analyzers.Global.Packages.props" />
+    <Import Project="$(PlochSiblingsRoot)mrploch-development\dependencies\MicrosoftExtensions.Net9.Packages.props" />
+    <Import Project="$(PlochSiblingsRoot)mrploch-development\dependencies\Spectre.Console.Packages.props" />
+    <Import Project="$(PlochSiblingsRoot)mrploch-development\dependencies\Testing.Packages.props" />
+
+    <ItemGroup Label="EF Core design-time tooling (not covered by the shared props)">
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.5" />
+        <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.5" />
+    </ItemGroup>
+</Project>

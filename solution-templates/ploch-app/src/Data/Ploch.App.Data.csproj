@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>$(TargetFrameworkVersion)</TargetFramework>
+    </PropertyGroup>
+    <ItemGroup Label="Ploch.Data sibling libraries">
+        <ProjectReference Include="$(PlochSiblingsRoot)ploch-data\src\Data.EFCore\Ploch.Data.EFCore.csproj" />
+        <ProjectReference Include="$(PlochSiblingsRoot)ploch-data\src\Data.GenericRepository\Data.GenericRepository.EFCore\Ploch.Data.GenericRepository.EFCore.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Model\Ploch.App.Model.csproj" />
+    </ItemGroup>
+</Project>

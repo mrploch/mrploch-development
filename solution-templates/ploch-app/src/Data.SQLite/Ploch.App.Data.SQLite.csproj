@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>$(TargetFrameworkVersion)</TargetFramework>
+    </PropertyGroup>
+    <ItemGroup Label="Ploch.Data sibling libraries">
+        <ProjectReference Include="$(PlochSiblingsRoot)ploch-data\src\Data.EFCore.SqLite\Ploch.Data.EFCore.SqLite.csproj" />
+        <ProjectReference Include="$(PlochSiblingsRoot)ploch-data\src\Data.EFCore\Ploch.Data.EFCore.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Data\Ploch.App.Data.csproj" />
+    </ItemGroup>
+    <ItemGroup Label="EF Core design-time tooling">
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+    <ItemGroup>
+        <None Update="appsettings.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+</Project>

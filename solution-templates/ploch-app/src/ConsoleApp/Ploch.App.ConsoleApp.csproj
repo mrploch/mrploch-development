@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>$(TargetFrameworkVersion)</TargetFramework>
+    </PropertyGroup>
+    <ItemGroup Label="Ploch sibling libraries">
+        <ProjectReference Include="$(PlochSiblingsRoot)ploch-data\src\Data.GenericRepository\Data.GenericRepository.EFCore.SqLite\Ploch.Data.GenericRepository.EFCore.SqLite.csproj" />
+        <ProjectReference Include="$(PlochSiblingsRoot)ploch-commandline\src\Spectre\CommandLine.Spectre\Ploch.CommandLine.Spectre.csproj" />
+    </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\Data\Ploch.App.Data.csproj" />
+    </ItemGroup>
+    <ItemGroup Label="Spectre.Console">
+        <PackageReference Include="Spectre.Console" />
+        <PackageReference Include="Spectre.Console.Cli" />
+    </ItemGroup>
+    <ItemGroup>
+        <None Update="appsettings.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+</Project>
