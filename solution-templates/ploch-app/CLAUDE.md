@@ -21,11 +21,23 @@ It is built on the `Ploch.Data` generic repository / Unit of Work stack and the
 
 ## Cross-repository references
 
-This repo references the MrPloch libraries as **relative source-project references**, anchored to
-`$(PlochSiblingsRoot)` (defined in `Directory.Build.props`, default `$(MSBuildThisFileDirectory)..\`).
-All MrPloch repos (`ploch-common`, `ploch-data`, `ploch-commandline`, `mrploch-development`) must be
-cloned as **siblings** under the same parent folder. Override with
-`-p:PlochSiblingsRoot=<path-with-trailing-slash>` if your layout differs.
+This repo references the MrPloch libraries either as **relative source-project references** or as
+**NuGet packages** from the MrPloch GitHub Packages feed, controlled by the
+`UsePlochProjectReferences` MSBuild property (default set in `Directory.Build.props` by the
+template's `--referenceStyle` parameter; flip per build with
+`-p:UsePlochProjectReferences=true|false`).
+
+- ProjectReference mode (`true`): all MrPloch repos (`ploch-common`, `ploch-data`,
+  `ploch-commandline`, `mrploch-development`) must be cloned as **siblings** under the same
+  parent folder, anchored to `$(PlochSiblingsRoot)` (default `$(MSBuildThisFileDirectory)..\`;
+  override with `-p:PlochSiblingsRoot=<path-with-trailing-slash>`).
+- NuGet mode (`false`): `Ploch.*` packages restore from the GitHub feed (`NuGet.Config`;
+  requires `MRPLOCH_GITHUB_PACKAGES_TOKEN`); versions pinned via `PlochPackagesVersion` in
+  `Directory.Packages.props`. Exception: `Ploch.CommandLine.Spectre` is not yet published, so
+  the ConsoleApp always uses the `ploch-commandline` sibling source — which transitively needs
+  the `ploch-common` sibling too. Only the `ploch-data` clone becomes optional in NuGet mode.
+- The SQLite/SQL Server `Ploch.Data.GenericRepository.EFCore.*` DI packages share namespaces —
+  reference only one per project.
 
 Shared package versions and analyzers are imported from `mrploch-development/dependencies/*.props`
 in `Directory.Packages.props` (Central Package Management).

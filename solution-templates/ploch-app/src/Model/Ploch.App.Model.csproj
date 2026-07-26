@@ -2,7 +2,10 @@
     <PropertyGroup>
         <TargetFramework>$(TargetFrameworkVersion)</TargetFramework>
     </PropertyGroup>
-    <ItemGroup>
+    <ItemGroup Label="Ploch sibling libraries (source)" Condition="'$(UsePlochProjectReferences)' == 'true'">
         <ProjectReference Include="$(PlochSiblingsRoot)ploch-data\src\Data.Model\Ploch.Data.Model.csproj" />
+    </ItemGroup>
+    <ItemGroup Label="Ploch libraries (NuGet)" Condition="'$(UsePlochProjectReferences)' != 'true'">
+        <PackageReference Include="Ploch.Data.Model" />
     </ItemGroup>
 </Project>

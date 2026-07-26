@@ -8,6 +8,19 @@
             if your clone layout differs.
         -->
         <PlochSiblingsRoot Condition="'$(PlochSiblingsRoot)' == ''">$(MSBuildThisFileDirectory)__PLOCH_SIBLINGS_ROOT__</PlochSiblingsRoot>
+        <!--
+            Reference style for the Ploch libraries (ploch-common / ploch-data / ploch-commandline):
+              true  - relative ProjectReferences into the side-by-side sibling repository clones
+                      (local cross-repo development; the default when the template was generated
+                      with referenceStyle=project).
+              false - PackageReferences restored from the MrPloch GitHub Packages feed (see
+                      NuGet.Config; requires the MRPLOCH_GITHUB_PACKAGES_TOKEN environment variable).
+            The default below was stamped by the 'referenceStyle' template parameter; either mode
+            can be selected per build with -p:UsePlochProjectReferences=true|false.
+            Exception: Ploch.CommandLine.Spectre is not yet published as a NuGet package, so the
+            ConsoleApp project references the ploch-commandline sibling clone in both modes.
+        -->
+        <UsePlochProjectReferences Condition="'$(UsePlochProjectReferences)' == ''">__PLOCH_USE_PROJECT_REFERENCES__</UsePlochProjectReferences>
     </PropertyGroup>
 
     <PropertyGroup Label="Org">

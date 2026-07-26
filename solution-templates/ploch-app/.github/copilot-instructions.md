@@ -14,8 +14,10 @@ root for the canonical agent guidance.
 
 ## Conventions
 
-- MrPloch libraries are referenced as relative source projects anchored to `$(PlochSiblingsRoot)`;
-  the MrPloch repos must be cloned as siblings.
+- MrPloch libraries are referenced either as relative source projects anchored to
+  `$(PlochSiblingsRoot)` (MrPloch repos cloned as siblings) or as NuGet packages from the MrPloch
+  GitHub Packages feed — switch with `-p:UsePlochProjectReferences=true|false`.
+  `Ploch.CommandLine.Spectre` is not yet published, so it stays a sibling source reference in both modes.
 - Entities implement `Ploch.Data.Model` interfaces; configurations are `internal`; set `OnDelete` explicitly.
 - Inject the narrowest repository interface; use `IUnitOfWork` for multi-entity transactions.
 - Tests use xUnit v3, FluentAssertions and AutoFixture.

@@ -3,8 +3,23 @@
         <OutputType>Exe</OutputType>
         <TargetFramework>$(TargetFrameworkVersion)</TargetFramework>
     </PropertyGroup>
-    <ItemGroup Label="Ploch sibling libraries">
+    <!--
+        The SQLite and SQL Server DependencyInjection packages/projects share namespaces and
+        method signatures — reference only ONE of them (this app uses the SQLite one).
+    -->
+    <ItemGroup Label="Ploch sibling libraries (source)" Condition="'$(UsePlochProjectReferences)' == 'true'">
         <ProjectReference Include="$(PlochSiblingsRoot)ploch-data\src\Data.GenericRepository\Data.GenericRepository.EFCore.SqLite\Ploch.Data.GenericRepository.EFCore.SqLite.csproj" />
+    </ItemGroup>
+    <ItemGroup Label="Ploch libraries (NuGet)" Condition="'$(UsePlochProjectReferences)' != 'true'">
+        <PackageReference Include="Ploch.Data.GenericRepository.EFCore.SqLite" />
+    </ItemGroup>
+    <!--
+        Ploch.CommandLine.Spectre is not yet published as a NuGet package, so it is a sibling
+        ProjectReference in BOTH reference modes — the ploch-commandline repo must be cloned
+        beside this one even when building with UsePlochProjectReferences=false.
+        Tracked by https://github.com/mrploch/ploch-commandline/issues/7.
+    -->
+    <ItemGroup Label="Ploch.CommandLine (source in both modes)">
         <ProjectReference Include="$(PlochSiblingsRoot)ploch-commandline\src\Spectre\CommandLine.Spectre\Ploch.CommandLine.Spectre.csproj" />
     </ItemGroup>
     <ItemGroup>

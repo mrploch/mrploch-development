@@ -26,6 +26,41 @@
       "datatype": "bool",
       "description": "Skip the automatic 'dotnet restore' run after the project is created.",
       "defaultValue": "false"
+    },
+    "referenceStyle": {
+      "type": "parameter",
+      "datatype": "choice",
+      "description": "How the generated repository references the Ploch libraries by default. Either style can still be flipped at build time with -p:UsePlochProjectReferences=true|false.",
+      "defaultValue": "project",
+      "choices": [
+        {
+          "choice": "project",
+          "description": "Relative ProjectReferences to the side-by-side ploch-* sibling repository clones (local cross-repo development)."
+        },
+        {
+          "choice": "nuget",
+          "description": "PackageReferences restored from the MrPloch GitHub Packages feed (requires the MRPLOCH_GITHUB_PACKAGES_TOKEN environment variable). Note: Ploch.CommandLine.Spectre is not yet published, so the ConsoleApp project always references the ploch-commandline sibling clone."
+        }
+      ]
+    },
+    "usePlochProjectReferences": {
+      "type": "generated",
+      "generator": "switch",
+      "replaces": "__PLOCH_USE_PROJECT_REFERENCES__",
+      "parameters": {
+        "evaluator": "C++",
+        "datatype": "string",
+        "cases": [
+          {
+            "condition": "(referenceStyle == 'nuget')",
+            "value": "false"
+          },
+          {
+            "condition": "",
+            "value": "true"
+          }
+        ]
+      }
     }
   },
   "sources": [

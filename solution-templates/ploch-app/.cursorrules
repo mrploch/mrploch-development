@@ -4,9 +4,11 @@ MrPloch layered console app (Model → Data → ConsoleApp) on the Ploch.Data ge
 repository / Unit of Work stack and the Ploch.CommandLine.Spectre console host.
 See CLAUDE.md for the canonical, full guidance.
 
-- MrPloch libraries are relative source-project references anchored to `$(PlochSiblingsRoot)`.
-  Clone ploch-common, ploch-data, ploch-commandline and mrploch-development as siblings, or
-  override `-p:PlochSiblingsRoot=<path-with-trailing-slash>`.
+- MrPloch libraries are either relative source-project references anchored to `$(PlochSiblingsRoot)`
+  (clone ploch-common, ploch-data, ploch-commandline and mrploch-development as siblings, or
+  override `-p:PlochSiblingsRoot=<path-with-trailing-slash>`) or NuGet packages from the MrPloch
+  GitHub Packages feed — switch with `-p:UsePlochProjectReferences=true|false`.
+  Ploch.CommandLine.Spectre is not yet published, so it is a sibling source reference in both modes.
 - Entities (src/Model) implement Ploch.Data.Model interfaces — no ad-hoc Id/Name/Title.
 - One internal IEntityTypeConfiguration<T> per entity in src/Data/Configurations; set OnDelete explicitly.
 - Inject the narrowest repository interface; use IUnitOfWork for multi-entity transactions.

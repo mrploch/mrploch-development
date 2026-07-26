@@ -15,4 +15,34 @@
         <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.5" />
         <PackageVersion Include="Microsoft.EntityFrameworkCore.Tools" Version="10.0.5" />
     </ItemGroup>
+
+    <!--
+        Versions for the Ploch library packages, used when building with
+        UsePlochProjectReferences=false (NuGet mode — see Directory.Build.props).
+        These packages are served by the MrPloch GitHub Packages feed (see NuGet.Config);
+        3.1.14-prerelease is the newest version published for every package below.
+        The shared mrploch-development/dependencies/Ploch.Packages.props is intentionally
+        not imported here: it pins 3.0.0, which is not available on either feed.
+        Unused in ProjectReference mode (PackageVersion entries without a matching
+        PackageReference are inert under Central Package Management).
+    -->
+    <PropertyGroup Label="Ploch package version">
+        <PlochPackagesVersion>3.1.14-prerelease</PlochPackagesVersion>
+    </PropertyGroup>
+    <ItemGroup Label="Ploch libraries (NuGet mode)">
+        <PackageVersion Include="Ploch.Data.Model" Version="$(PlochPackagesVersion)" />
+        <PackageVersion Include="Ploch.Data.EFCore" Version="$(PlochPackagesVersion)" />
+        <PackageVersion Include="Ploch.Data.EFCore.SqLite" Version="$(PlochPackagesVersion)" />
+        <PackageVersion Include="Ploch.Data.EFCore.SqlServer" Version="$(PlochPackagesVersion)" />
+        <PackageVersion Include="Ploch.Data.GenericRepository.EFCore" Version="$(PlochPackagesVersion)" />
+        <!--
+            The two DependencyInjection provider packages share namespaces and method
+            signatures — reference only ONE of them in a given project (the ConsoleApp
+            uses the SqLite one; the SqlServer version is listed for repos that switch
+            their default provider).
+        -->
+        <PackageVersion Include="Ploch.Data.GenericRepository.EFCore.SqLite" Version="$(PlochPackagesVersion)" />
+        <PackageVersion Include="Ploch.Data.GenericRepository.EFCore.SqlServer" Version="$(PlochPackagesVersion)" />
+        <PackageVersion Include="Ploch.Data.GenericRepository.EFCore.IntegrationTesting" Version="$(PlochPackagesVersion)" />
+    </ItemGroup>
 </Project>

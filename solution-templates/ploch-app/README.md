@@ -20,8 +20,26 @@ tests/
 
 ## Prerequisites
 
-This repository references the MrPloch libraries as **relative source-project references**,
-so the following repositories must be cloned **side by side** under the same parent folder:
+This repository can reference the MrPloch libraries in two ways, controlled by the
+`UsePlochProjectReferences` MSBuild property (its default was chosen by the template's
+`--referenceStyle` parameter — see `Directory.Build.props`):
+
+- **ProjectReference mode** (`UsePlochProjectReferences=true`) — relative source-project
+  references into side-by-side sibling clones. Use this for local cross-repo development.
+- **NuGet mode** (`UsePlochProjectReferences=false`) — `Ploch.*` packages restored from the
+  MrPloch GitHub Packages feed (see `NuGet.Config`; requires the
+  `MRPLOCH_GITHUB_PACKAGES_TOKEN` environment variable). Package versions are pinned in
+  `Directory.Packages.props` (`PlochPackagesVersion`).
+
+Either mode can be selected per build without editing any file:
+
+```bash
+dotnet build -p:UsePlochProjectReferences=true    # sibling source projects
+dotnet build -p:UsePlochProjectReferences=false   # NuGet packages
+```
+
+In ProjectReference mode the following repositories must be cloned **side by side** under the
+same parent folder:
 
 ```text
 <parent>/
@@ -32,11 +50,21 @@ so the following repositories must be cloned **side by side** under the same par
   Ploch.App/          <- this repository
 ```
 
+In NuGet mode the `ploch-data` clone is no longer needed, but three siblings are still required:
+`mrploch-development` (shared package-version props), `ploch-commandline` (`Ploch.CommandLine.Spectre`
+is not yet published as a NuGet package, so the ConsoleApp project references its source in **both**
+modes), and `ploch-common` (referenced transitively by `Ploch.CommandLine.Spectre`'s own source
+projects).
+
 If your clone layout differs, override the sibling root at build time:
 
 ```bash
 dotnet build -p:PlochSiblingsRoot=<absolute-path-to-parent-with-trailing-slash>
 ```
+
+> **Note:** the SQLite and SQL Server `Ploch.Data.GenericRepository.EFCore.*` DependencyInjection
+> packages share namespaces and method signatures — a project may reference only **one** of them
+> at a time (the ConsoleApp uses the SQLite one).
 
 ## Build & test
 

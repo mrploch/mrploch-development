@@ -2,9 +2,13 @@
     <PropertyGroup>
         <TargetFramework>$(TargetFrameworkVersion)</TargetFramework>
     </PropertyGroup>
-    <ItemGroup Label="Ploch.Data sibling libraries">
+    <ItemGroup Label="Ploch.Data sibling libraries (source)" Condition="'$(UsePlochProjectReferences)' == 'true'">
         <ProjectReference Include="$(PlochSiblingsRoot)ploch-data\src\Data.EFCore\Ploch.Data.EFCore.csproj" />
         <ProjectReference Include="$(PlochSiblingsRoot)ploch-data\src\Data.GenericRepository\Data.GenericRepository.EFCore\Ploch.Data.GenericRepository.EFCore.csproj" />
+    </ItemGroup>
+    <ItemGroup Label="Ploch.Data libraries (NuGet)" Condition="'$(UsePlochProjectReferences)' != 'true'">
+        <PackageReference Include="Ploch.Data.EFCore" />
+        <PackageReference Include="Ploch.Data.GenericRepository.EFCore" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\Model\Ploch.App.Model.csproj" />
