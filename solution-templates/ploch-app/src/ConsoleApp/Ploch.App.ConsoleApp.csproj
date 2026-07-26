@@ -4,8 +4,8 @@
         <TargetFramework>$(TargetFrameworkVersion)</TargetFramework>
     </PropertyGroup>
     <!--
-        The SqLite and SqlServer DependencyInjection packages/projects share namespaces and
-        method signatures — reference only ONE of them (this app uses the SqLite one).
+        The SQLite and SQL Server DependencyInjection packages/projects share namespaces and
+        method signatures — reference only ONE of them (this app uses the SQLite one).
     -->
     <ItemGroup Label="Ploch sibling libraries (source)" Condition="'$(UsePlochProjectReferences)' == 'true'">
         <ProjectReference Include="$(PlochSiblingsRoot)ploch-data\src\Data.GenericRepository\Data.GenericRepository.EFCore.SqLite\Ploch.Data.GenericRepository.EFCore.SqLite.csproj" />

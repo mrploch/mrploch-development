@@ -63,7 +63,8 @@ You can also override the sibling root or the reference style per build without 
 
 ```bash
 dotnet build -p:PlochSiblingsRoot=<absolute-path-with-trailing-slash>
-dotnet build -p:UsePlochProjectReferences=true|false
+dotnet build -p:UsePlochProjectReferences=true    # sibling source projects
+dotnet build -p:UsePlochProjectReferences=false   # NuGet packages
 ```
 
 Notes on the reference style:
@@ -73,7 +74,7 @@ Notes on the reference style:
   repo can flip between sibling sources and NuGet packages at any time.
 - `Ploch.CommandLine.Spectre` is not yet published as a NuGet package, so the ConsoleApp project
   references the `ploch-commandline` sibling clone in **both** modes.
-- The SqLite and SqlServer `Ploch.Data.GenericRepository.EFCore.*` DependencyInjection packages
+- The SQLite and SQL Server `Ploch.Data.GenericRepository.EFCore.*` DependencyInjection packages
   share namespaces — a project may reference only one of them at a time.
 
 ### Verify a generated app

@@ -36,7 +36,7 @@ template's `--referenceStyle` parameter; flip per build with
   `Directory.Packages.props`. Exception: `Ploch.CommandLine.Spectre` is not yet published, so
   the ConsoleApp always uses the `ploch-commandline` sibling source — which transitively needs
   the `ploch-common` sibling too. Only the `ploch-data` clone becomes optional in NuGet mode.
-- The SqLite/SqlServer `Ploch.Data.GenericRepository.EFCore.*` DI packages share namespaces —
+- The SQLite/SQL Server `Ploch.Data.GenericRepository.EFCore.*` DI packages share namespaces —
   reference only one per project.
 
 Shared package versions and analyzers are imported from `mrploch-development/dependencies/*.props`

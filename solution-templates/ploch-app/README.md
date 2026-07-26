@@ -62,9 +62,9 @@ If your clone layout differs, override the sibling root at build time:
 dotnet build -p:PlochSiblingsRoot=<absolute-path-to-parent-with-trailing-slash>
 ```
 
-> **Note:** the SqLite and SqlServer `Ploch.Data.GenericRepository.EFCore.*` DependencyInjection
+> **Note:** the SQLite and SQL Server `Ploch.Data.GenericRepository.EFCore.*` DependencyInjection
 > packages share namespaces and method signatures — a project may reference only **one** of them
-> at a time (the ConsoleApp uses the SqLite one).
+> at a time (the ConsoleApp uses the SQLite one).
 
 ## Build & test
 
