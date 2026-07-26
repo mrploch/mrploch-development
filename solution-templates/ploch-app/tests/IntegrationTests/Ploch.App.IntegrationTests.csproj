@@ -16,8 +16,11 @@
             <PrivateAssets>all</PrivateAssets>
         </PackageReference>
     </ItemGroup>
-    <ItemGroup Label="Ploch.Data integration-testing harness">
+    <ItemGroup Label="Ploch.Data integration-testing harness (source)" Condition="'$(UsePlochProjectReferences)' == 'true'">
         <ProjectReference Include="$(PlochSiblingsRoot)ploch-data\src\Data.GenericRepository\Data.GenericRepository.EFCore.IntegrationTesting\Ploch.Data.GenericRepository.EFCore.IntegrationTesting.csproj" />
+    </ItemGroup>
+    <ItemGroup Label="Ploch.Data integration-testing harness (NuGet)" Condition="'$(UsePlochProjectReferences)' != 'true'">
+        <PackageReference Include="Ploch.Data.GenericRepository.EFCore.IntegrationTesting" />
     </ItemGroup>
     <ItemGroup>
         <ProjectReference Include="..\..\src\Data\Ploch.App.Data.csproj" />

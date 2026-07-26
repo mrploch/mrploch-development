@@ -56,13 +56,25 @@ names are intentionally fixed.
 |-----------|---------|---------|
 | `-n, --name` | `Ploch.App` | Project/solution/namespace name. |
 | `--siblingsRoot` | `..\` | Relative path (trailing `\`) from the repo root to the parent folder holding the `ploch-*` sibling repos. Override if your clone layout differs. |
+| `--referenceStyle` | `project` | How the generated repo references the Ploch libraries by default: `project` (relative ProjectReferences to sibling clones) or `nuget` (PackageReferences from the MrPloch GitHub Packages feed — requires `MRPLOCH_GITHUB_PACKAGES_TOKEN`). Stamps the default of the `UsePlochProjectReferences` MSBuild property. |
 | `--skipRestore` | `false` | Skip the automatic `dotnet restore` after creation. |
 
-You can also override the sibling root per build without re-templating:
+You can also override the sibling root or the reference style per build without re-templating:
 
 ```bash
 dotnet build -p:PlochSiblingsRoot=<absolute-path-with-trailing-slash>
+dotnet build -p:UsePlochProjectReferences=true|false
 ```
+
+Notes on the reference style:
+
+- Both styles are always present in the generated `.csproj` files, gated by
+  `$(UsePlochProjectReferences)` — `--referenceStyle` only chooses the default, so a generated
+  repo can flip between sibling sources and NuGet packages at any time.
+- `Ploch.CommandLine.Spectre` is not yet published as a NuGet package, so the ConsoleApp project
+  references the `ploch-commandline` sibling clone in **both** modes.
+- The SqLite and SqlServer `Ploch.Data.GenericRepository.EFCore.*` DependencyInjection packages
+  share namespaces — a project may reference only one of them at a time.
 
 ### Verify a generated app
 

@@ -9,9 +9,12 @@ command reference — it is the canonical agent guide for this repository.
 
 ## Quick facts
 
-- MrPloch libraries are referenced as **relative source projects** anchored to
-  `$(PlochSiblingsRoot)`; clone `ploch-common`, `ploch-data`, `ploch-commandline` and
-  `mrploch-development` as siblings, or override `-p:PlochSiblingsRoot=<path-with-trailing-slash>`.
+- MrPloch libraries are referenced either as **relative source projects** anchored to
+  `$(PlochSiblingsRoot)` (clone `ploch-common`, `ploch-data`, `ploch-commandline` and
+  `mrploch-development` as siblings, or override `-p:PlochSiblingsRoot=<path-with-trailing-slash>`)
+  or as **NuGet packages** from the MrPloch GitHub Packages feed — switch with
+  `-p:UsePlochProjectReferences=true|false` (default set in `Directory.Build.props`).
+  `Ploch.CommandLine.Spectre` is not yet published, so it is a sibling source reference in both modes.
 - Build: `dotnet build Ploch.App.slnx` · Test: `dotnet test Ploch.App.slnx` ·
   Run: `dotnet run --project src/ConsoleApp -- demo`.
 - EF Core migrations live in `src/Data.SQLite` / `src/Data.SqlServer` (SQLite is the default).
