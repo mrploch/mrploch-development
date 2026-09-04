@@ -5,7 +5,7 @@
         A single shared PlochPackagesVersion used to drive both, which stopped being expressible
         once the families diverged: ploch-common published 4.0.47 on 2026-09-03 while ploch-data
         was still on 3.x. Everything importing this file therefore resolved Ploch.Common at 3.0.0,
-        three majors of fixes behind (mrploch/mrploch-development#14, mrploch/ploch-data#94).
+        a full major version behind (mrploch/mrploch-development#14, mrploch/ploch-data#94).
 
         Both variables are referenced only inside this file - consumers import it and receive the
         PackageVersion items - so a consuming repository never needs to know these names.
@@ -46,7 +46,17 @@
         <PackageVersion Include="Ploch.TestingSupport.XUnit3.Dependencies" Version="$(PlochCommonPackagesVersion)" />
     </ItemGroup>
 
-    <!-- ploch-data -->
+    <!--
+        ploch-data.
+
+        NOT listed, deliberately: Ploch.Data.GenericRepository.EFCore.SqLite, .SqlServer and
+        .Specification, and Ploch.Data.EFCore.IntegrationTesting.FluentAssertions. All four are
+        first-time publishes in ploch-data 4.0.0 and do not exist on nuget.org at any version
+        today (verified - api.nuget.org returns 404 for each id), so pinning them to
+        PlochDataPackagesVersion would point at a version that cannot be restored. Add them in
+        the same change that bumps PlochDataPackagesVersion to 4.0.0, once the release has
+        published. Raised by codeant-ai on mrploch/mrploch-development#15.
+    -->
     <ItemGroup>
         <PackageVersion Include="Ploch.Data.Model" Version="$(PlochDataPackagesVersion)" />
         <PackageVersion Include="Ploch.Data.EFCore" Version="$(PlochDataPackagesVersion)" />
@@ -56,5 +66,10 @@
         <PackageVersion Include="Ploch.Data.GenericRepository" Version="$(PlochDataPackagesVersion)" />
         <PackageVersion Include="Ploch.Data.GenericRepository.EFCore" Version="$(PlochDataPackagesVersion)" />
         <PackageVersion Include="Ploch.Data.GenericRepository.EFCore.IntegrationTesting" Version="$(PlochDataPackagesVersion)" />
+        <!-- Published at 3.0.1 but never listed here, so a consumer could not centrally version
+             them. Same omission class as the one codeant-ai raised, found by diffing this list
+             against the packable projects in ploch-data. -->
+        <PackageVersion Include="Ploch.Data.StandardDataSets" Version="$(PlochDataPackagesVersion)" />
+        <PackageVersion Include="Ploch.Data.Utilities" Version="$(PlochDataPackagesVersion)" />
     </ItemGroup>
 </Project>
