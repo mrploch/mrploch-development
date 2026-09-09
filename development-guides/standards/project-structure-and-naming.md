@@ -31,7 +31,7 @@ Every MrPloch repository is one of two shapes. Which shape a repo is decides whe
 
 **One repository delivers one product.** `src/` and `tests/` sit at the repository root, and every project under them belongs to that one product. This is the shape every new repository should use unless there is a specific reason to host multiple products together.
 
-```
+```text
 ploch-crawler/                              <- repo root = the product
 ├── Ploch.Crawler.slnx
 ├── Directory.Build.props
@@ -53,7 +53,7 @@ Naming pattern: `Ploch.{Product}.{Layer}[.{Qualifier}]` — no `{Area}` segment.
 
 **One repository hosts several unrelated deliverables.** This is a deliberate exception, used when the deliverables are small, related by tooling rather than by domain, or benefit from shared CI/analyser configuration more than they would from separation. `ploch-ai-tools` is the live example: it hosts MCP servers, API clients, the `KnowledgeBase` app, and the `ConfigTracker` app side by side.
 
-```
+```text
 ploch-ai-tools/                             <- repo root = a family of deliverables
 ├── Ploch.AI.slnx                           <- lists everything
 ├── Ploch.AI.ConfigTracker.slnx             <- scoped solution: only this deliverable + its deps
@@ -97,7 +97,7 @@ Everything else — the layer names, the four-names-one-string rule, the casing 
 
 ## 2. The Naming Pattern
 
-```
+```text
 Ploch.{Product}[.{Area}].{Layer}[.{Qualifier}]
 ```
 
@@ -106,8 +106,18 @@ Ploch.{Product}[.{Area}].{Layer}[.{Qualifier}]
 | `Ploch` | Always | Organisation prefix. Every project, including tests and samples. | — |
 | `{Product}` | Always | The product or library family the repo delivers. | `Crawler`, `AI`, `Common`, `Data` |
 | `{Area}` | Only in a multi-project repository ([§1.2](#12-multi-project-repository)) | A distinct deliverable inside a repo that hosts several. | `ConfigTracker`, `KnowledgeBase` |
-| `{Layer}` | Always | The architectural layer. Must come from the closed set in [§3](#3-canonical-layers). | `Domain`, `Data`, `UseCases`, `UI` |
-| `{Qualifier}` | Optional | Narrows the layer: a provider, technology, or slice. | `PostgreSql`, `SQLite`, `ConsoleApp` |
+| `{Layer}` | Always **in an application repo**; optional in a shared-library repo (see note) | The architectural layer. Must come from the closed set in [§3](#3-canonical-layers). | `Domain`, `Data`, `UseCases`, `UI` |
+| `{Qualifier}` | Optional, **repeatable** | Narrows the layer: a provider, technology, slice, or test kind. More than one may appear, applied left to right. | `PostgreSql`, `SQLite`, `ConsoleApp`; chained in `Ploch.Crawler.Data.PostgreSql.IntegrationTests` (provider + test kind) |
+
+**Shared-library repos are the exception to a mandatory `{Layer}`.** This standard governs *application* repos. A library family names its projects by **feature area**, not architectural layer, and its root package legitimately has no segment after `{Product}` at all:
+
+| Project | Shape |
+|---|---|
+| `Ploch.Common` | `Ploch.{Product}` — the root package of a library family; no layer segment |
+| `Ploch.Common.Serialization` | `Ploch.{Product}.{FeatureArea}` |
+| `Ploch.Data.EFCore.SqLite` | `Ploch.{Product}.{FeatureArea}.{Qualifier}` |
+
+Do not force a library into `.Domain`/`.UseCases`/`.UI`; a shared library has no application layers of its own. The closed layer set in [§3](#3-canonical-layers) applies to application repos, and [§3.3](#33-application) says the same thing from the other direction.
 
 ### 2.1 Four Names, One String
 
@@ -128,7 +138,7 @@ The **directory** is the only name that differs: it is the project name with the
 
 This is a workspace-specific application of Microsoft's own guidance, not a local invention. The [namespace naming guidelines](https://learn.microsoft.com/dotnet/standard/design-guidelines/names-of-namespaces) specify:
 
-```
+```text
 <Company>.(<Product>|<Technology>)[.<Feature>][.<Subnamespace>]
 ```
 
@@ -194,7 +204,9 @@ As currently written, entities in both worked examples are plain data carriers �
 | `.Data` | `Ploch.{Product}[.{Area}].Data` | `DbContext`, `IEntityTypeConfiguration<>` classes, provider-agnostic DI registration. |
 | `.Data.{Provider}` | `Ploch.{Product}[.{Area}].Data.{Provider}` | Design-time factory, EF Core migrations, provider-specific connection configuration. |
 
-`.Data` never references a specific ADO.NET provider package — that dependency belongs entirely in `.Data.{Provider}`, so a repo can add or swap providers by adding or removing one project. `ploch-crawler` demonstrates this: `Ploch.Crawler.Data` references only `Microsoft.EntityFrameworkCore`/`.Relational`, and `Ploch.Crawler.Data.PostgreSql` is the only project that references `Npgsql.EntityFrameworkCore.PostgreSQL`. `ConfigTracker` demonstrates the multi-provider case: one `.Data` project, two sibling provider projects (`.Data.SQLite` and `.Data.SqlServer`) that can be swapped by changing which one the host references (see [§5.3](#53-database-provider-swapping)).
+`.Data` never references a specific ADO.NET provider package — that dependency belongs entirely in `.Data.{Provider}`, so a repo can add or swap providers by adding or removing one project. `ploch-crawler` demonstrates this: `Ploch.Crawler.Data` references only `Microsoft.EntityFrameworkCore`/`.Relational`, and `Ploch.Crawler.Data.PostgreSql` is the only *library* project that references `Npgsql.EntityFrameworkCore.PostgreSQL`. `ConfigTracker` demonstrates the multi-provider case: one `.Data` project, two sibling provider projects (`.Data.SQLite` and `.Data.SqlServer`) that can be swapped by changing which one the host references (see [§5.3](#53-plochdata-usage)).
+
+> **Divergence in the reference code:** `Ploch.Crawler.UI.ConsoleApp` *also* declares `Npgsql.EntityFrameworkCore.PostgreSQL` directly (visible in its `.csproj` in [§5.5](#55-full-csproj-reference--ploch-crawler)). That reference is redundant — the host already gets the provider transitively through `.Data.PostgreSql` — and it undercuts the split, because the host now names a database provider it should not need to know about. **Templates must not copy it**; the crawler should drop it.
 
 Canonical provider qualifiers: `PostgreSql`, `SQLite`, `SqlServer` — see [§4](#4-casing-and-spelling) for exact casing.
 
@@ -205,7 +217,7 @@ Canonical provider qualifiers: `PostgreSql`, `SQLite`, `SqlServer` — see [§4]
 | `.UseCases` | `Ploch.{Product}[.{Area}].UseCases` | Application-layer orchestration: use-case classes, pipelines, mapping, DTOs. |
 | `.Abstractions` | `Ploch.{Product}[.{Area}].{Layer}.Abstractions` | Interfaces/contracts extracted so a consumer can depend on them without the implementation. |
 
-`.UseCases` is the single application layer name — never `Core`, `Services`, `Business`, `Logic`, `Processing`, or `Handlers`. `Ploch.Crawler.UseCases` is the largest project in the crawler example: it holds the crawl pipeline, robots.txt handling, URL normalisation, HTML analysis, and email extraction — all pure logic with **no EF Core dependency**. `.Data` references `.UseCases` (for the `ICrawlStore` contract it implements), not the other way around — the use-case layer defines the contracts it needs from persistence, and the data layer fulfils them. That inversion is deliberate: it is what makes `UseCases.Tests` runnable with an in-memory fake store and no database at all (see [§7](#7-testing-standards)).
+`.UseCases` is the single application layer name — never `Core`, `Services`, `Business`, `Logic`, `Processing`, or `Handlers`. `Ploch.Crawler.UseCases` is the largest project in the crawler example: it holds the crawl pipeline, robots.txt handling, URL normalisation, HTML analysis, and email extraction — all pure logic with **no EF Core dependency**. `.Data` references `.UseCases` (for the `ICrawlStore` contract it implements), not the other way around — the use-case layer defines the contracts it needs from persistence, and the data layer fulfils them. That inversion is deliberate: it is what makes `UseCases.Tests` runnable with an in-memory fake store and no database at all (see [§6](#6-testing-standards)).
 
 `.Abstractions` is a **qualifier on a layer**, never a layer of its own — `Ploch.{Product}.UseCases.Abstractions`, not `Ploch.{Product}.Abstractions`. Prefer it over `.Interfaces`.
 
@@ -213,7 +225,7 @@ Canonical provider qualifiers: `PostgreSql`, `SQLite`, `SqlServer` — see [§4]
 
 Every user-facing presentation project lives under a `.UI.` segment, followed by the technology. `UI` is a group, never a leaf project on its own.
 
-```
+```text
 Ploch.{Product}[.{Area}].UI.{Technology}
 ```
 
@@ -226,7 +238,7 @@ Ploch.{Product}[.{Area}].UI.{Technology}
 | `.UI.Wpf` | WPF desktop host |
 | `.UI.Shared` | ViewModels/presentation logic shared across all UI technologies of the product |
 
-`Ploch.Crawler.UI.ConsoleApp` is the live example — the only project in the repo with `OutputType=Exe`. **Never drop the `.UI.` segment**, and **never repeat "UI" inside the technology name** (`UI.ConsoleUI` stutters; `UI.ConsoleApp` is correct). The technology segment must also not shadow a BCL type — this is why the console host is `ConsoleApp`, not `Console` (see [§4.1](#41-names-that-collide)).
+`Ploch.Crawler.UI.ConsoleApp` is the live example — the only *source* project with `OutputType=Exe`. (Both test projects set it too: xUnit v3's Microsoft Testing Platform runner needs an executable host, so `OutputType=Exe` is not by itself a marker of an application host.) **Never drop the `.UI.` segment**, and **never repeat "UI" inside the technology name** (`UI.ConsoleUI` stutters; `UI.ConsoleApp` is correct). The technology segment must also not shadow a BCL type — this is why the console host is `ConsoleApp`, not `Console` (see [§4.1](#41-names-that-collide)).
 
 ### 3.5 Services — the `.Api.` Group
 
@@ -269,7 +281,9 @@ Neither worked example currently has an API surface; this section documents the 
 
 1. **Two-letter acronyms are fully capitalised** — `IO`, `DB`, `UI`.
 2. **Three-or-more-letter acronyms are PascalCased** — `Xml`, `Json`, `Sql`, `Api`, `Grpc`.
-3. **Brand casing overrides both**, where the vendor defines one — `SQLite` and `PostgreSql` are the vendors' own spellings. `Npgsql.EntityFrameworkCore.PostgreSQL` (the NuGet package `ploch-crawler` consumes) capitalises `PostgreSQL` fully; this workspace's own project name uses `PostgreSql` casing instead, matching the `SQLite`/`SqlServer` pattern already established for the other providers. The **package** keeps its published casing; the **project/qualifier** follows this workspace's rule.
+3. **Brand casing overrides both**, where the vendor defines one — `SQLite` is the vendor's own spelling and is kept as-is.
+
+**`PostgreSql` is a deliberate exception to rule 3, not an application of it.** The vendor spells it `PostgreSQL`, and so does the NuGet package (`Npgsql.EntityFrameworkCore.PostgreSQL`). This workspace nonetheless uses **`PostgreSql`** as the project qualifier, applying the three-plus-letter acronym rule (rule 2) for consistency with the sibling `SqlServer` qualifier. The **package** keeps its published casing; the **project qualifier** uses ours. This is a house convention chosen over the brand spelling — recorded here so nobody "fixes" it in either direction.
 
 ### Other rules
 
@@ -293,27 +307,31 @@ This is the archetype both worked examples implement. It is the starting point f
 
 ### 5.1 Project Graph
 
-```
-                     ┌─────────────────┐
-                     │   .UI.ConsoleApp │  (Exe, references everything below)
-                     └────────┬────────┘
-                    ┌─────────┴─────────┐
-                    │                   │
-           ┌────────▼───────┐   ┌───────▼────────┐
-           │  .UseCases     │   │ .Data.{Provider}│
-           │  (pure logic)  │◄──┤ (EF Core provider)
-           └────────┬───────┘   └───────┬────────┘
-                    │                   │
-                    │           ┌───────▼────────┐
-                    │           │     .Data      │
-                    │           │ (DbContext,     │
-                    │           │  configs)       │
-                    │           └───────┬────────┘
-                    └─────────┬─────────┘
-                              │
-                     ┌────────▼────────┐
-                     │     .Domain      │
-                     └───────────────────┘
+```text
+                          ┌──────────────────┐
+                          │  .UI.ConsoleApp  │  (Exe — references everything below)
+                          └────────┬─────────┘
+                     ┌─────────────┴─────────────┐
+                     │                           │
+                     ▼                           ▼
+            ┌──────────────────┐      ┌──────────────────────┐
+            │    .UseCases     │      │  .Data.{Provider}    │
+            │   (pure logic;   │      │  (EF Core provider,  │
+            │  defines the     │      │   migrations)        │
+            │  persistence     │      └──────────┬───────────┘
+            │  contracts)      │                 │
+            └──────────────────┘                 ▼
+                     ▲   ▲             ┌──────────────────────┐
+                     │   │             │        .Data         │
+                     │   └─────────────┤  (DbContext, entity  │
+                     │   implements    │   configurations)    │
+                     │   ICrawlStore   └──────────┬───────────┘
+                     │                            │
+                     └──────────┐      ┌──────────┘
+                                ▼      ▼
+                          ┌──────────────────┐
+                          │     .Domain      │
+                          └──────────────────┘
 ```
 
 Read the diagram's `.Data → .UseCases` arrow carefully: it points **up**, not down. `.Data` depends on `.UseCases` to implement a contract `.UseCases` defines (`ICrawlStore` in the crawler example) — `.UseCases` never references `.Data` or any EF Core package. This is the Dependency Inversion Principle applied at the project level, and it is what lets `.UseCases.Tests` run with zero database dependency.
@@ -343,7 +361,9 @@ var cs = configuration.GetConnectionString("DefaultConnection").RequiredNotNullO
 
 **Why the extension form.** It reads left-to-right in the same direction as the data flows, it **returns the validated value** so it composes into an assignment or an expression body, and — critically — the argument-fault and required-state cases are *different methods* rather than the same method plus a hand-written `?? throw`, so the intended exception type is chosen deliberately instead of by accident.
 
-**The parameter name is captured automatically.** Every method takes its name parameter as `[CallerArgumentExpression]`, so on `net7.0+` (all current MrPloch projects target `net10.0`) you write `myVar.NotNull()` with **no arguments** — never `myVar.NotNull(nameof(myVar))`, which is redundant and drifts when the variable is renamed. The explicit overload exists only for `netstandard2.0` targets.
+**The parameter name is captured automatically — on `net7.0+`.** The `net7.0+` overloads take the name parameter as `[CallerArgumentExpression]`, so you write `myVar.NotNull()` with **no arguments**. There, `myVar.NotNull(nameof(myVar))` is not merely redundant — it silently drifts when the variable is renamed.
+
+This covers application projects, which target `net10.0`. It does **not** hold org-wide: shared libraries in `ploch-common` and `ploch-data` multi-target down to `netstandard2.0`, and configuration in this repository still targets `net8.0` (`repository-config/console-apps/Directory.Build.props`) and `net9.0`. On a `netstandard2.0` target the `[CallerArgumentExpression]` overload is unavailable and the explicit name argument is **required**: `myVar.NotNull(nameof(myVar))`. Check the project's effective TFM before assuming the no-argument form compiles.
 
 ##### The `NotNull` / `RequiredNotNull` distinction
 
@@ -370,10 +390,10 @@ A missing connection string in `appsettings.json` is **not** an `ArgumentNullExc
 | `RequiredNotNullOrEmpty()` | `InvalidOperationException` | Required string/collection state |
 | `RequiredTrue()` / `RequiredFalse()` | `InvalidOperationException` | A required condition on internal state |
 
-Path validation lives alongside it in `PathGuard`, with the same argument-vs-state pairing: `IsValidPath()` / `EnsureFileExists()` throw `ArgumentException`; `RequiredIsValidPath()` / `RequiredFileExists()` throw `InvalidOperationException`.
+Path validation lives alongside it in `PathGuard`, but **the pairing is not clean there** and the difference matters. `IsValidPath()` and `EnsureFileExists()` throw `ArgumentException`. `RequiredIsValidPath()` and `RequiredFileExists()` throw `InvalidOperationException` only for *their own* failure condition — `RequiredFileExists()` is implemented as `File.Exists(path.IsValidPath(parameterName))`, so a null, empty, or malformed path throws `ArgumentException` from the inner `IsValidPath()` call, and only a **syntactically valid path that does not exist** reaches the `InvalidOperationException`. If you need required-state semantics for a possibly-null path, call `RequiredNotNullOrEmpty()` on it first.
 
 > **`Ploch.Common.DawnGuard` is deprecated.** Its API is `[Obsolete]` and it exists only to add type guards over the third-party `Dawn.Guard` package. Do not add it to a new project; `ArgumentChecking` supersedes it with no external dependency. Migrate `Guard.Argument(x).NotNull()` call sites to `x.NotNull()`.
-
+>
 > **Known gap:** `ploch-crawler` currently uses the BCL form in 44 call sites across `.UseCases`, `.Data` and `.Data.PostgreSql`, plus a `?? throw new InvalidOperationException(...)` in `UI.ConsoleApp/Program.cs`. The project already references `Ploch.Common`, so these are pure call-site changes with no new dependency. This gap is recorded here rather than silently omitted, because this document is generated from what is actually true today.
 
 #### 5.2.2 Modular DI registration — `ServicesBundle`
@@ -390,8 +410,8 @@ Both examples build their data layer on `Ploch.Data`, specifically:
 
 - **`Ploch.Data.Model`** — the model-layer marker interfaces every entity implements. `Site : IHasId<int>`, `CrawlRun : IHasId<int>, IHasCreatedTime` (`ploch-crawler`); the same pattern in `ConfigTracker`'s entities. Implementing these interfaces, rather than hand-rolling an `Id`/`CreatedTime` property, is what lets `Ploch.Data.GenericRepository` operate on any entity generically.
 - **`Ploch.Data.EFCore`** — `BaseDbContextFactory<TContext, TFactory>` for design-time factories, `IDbContextCreationLifecycle` for provider-specific hooks into `OnModelCreating`/`OnConfiguring` (both examples' `DbContext` classes take this as a constructor parameter rather than hardcoding provider setup inline).
-- **`Ploch.Data.GenericRepository.EFCore`** — the generic repository and `IUnitOfWork` (see `data-access.md` for the full consumption rules). `services.AddDbContextWithRepositories<TContext>(...)` registers the `DbContext`, every repository interface, and `IUnitOfWork` in one call. `ploch-crawler`'s `AddCrawlerData` extension method wraps exactly this call.
-- **Provider packages follow the same `.EFCore.{Provider}` naming** the workspace uses for its own project qualifiers: `Ploch.Data.GenericRepository.EFCore.SqLite`, `Ploch.Data.GenericRepository.EFCore.SqlServer`.
+- **`Ploch.Data.GenericRepository.EFCore`** — the generic repository and `IUnitOfWork` (the full consumption rules live with the library, in [`mrploch/ploch-data`](https://github.com/mrploch/ploch-data) under `src/Data.GenericRepository/README.md`; there is no `data-access.md` in this repository). `services.AddDbContextWithRepositories<TContext>(...)` registers the `DbContext`, every repository interface, and `IUnitOfWork` in one call. `ploch-crawler`'s `AddCrawlerData` extension method wraps exactly this call.
+- **Provider packages follow `.EFCore.{Provider}` naming**: `Ploch.Data.GenericRepository.EFCore.SqLite`, `Ploch.Data.GenericRepository.EFCore.SqlServer`. Note these published packages spell it **`SqLite`**, which [§4](#4-casing-and-spelling) lists as wrong for *new* project qualifiers (`SQLite`). They are a **grandfathered legacy exception** — a published package ID cannot be renamed without breaking consumers. Do not cite them as precedent for a new project, and do not "correct" them.
 
 **Database provider swapping** is the point of separating `.Data` from `.Data.{Provider}`. `ConfigTracker` demonstrates it directly: `ServiceCollectionRegistrations.cs` inside its `Shared/` folder is **not its own project** — it is a single source file **linked** (via `<Compile Include="..\Shared\...\" Link="..." />`) into *both* `Data.SQLite.csproj` and `Data.SqlServer.csproj`. Both provider assemblies therefore expose the same namespace, class name, and method signatures, and switching which database `ConfigTracker` uses is a `ProjectReference` change with **zero code change** at the call site. `ploch-crawler`, needing only one provider so far, keeps its registration directly inside `Ploch.Crawler.Data.PostgreSql`'s own `ServiceCollectionRegistrations.cs` instead — the linked-file trick is worth the extra indirection only once a second provider actually exists.
 
@@ -608,7 +628,7 @@ Any new console-app-with-data-access repo should import the same six `mrploch-de
 | Test framework | **xUnit v3** (`xunit.v3` + `xunit.runner.visualstudio`) | Not xUnit v2. Both `Ploch.Crawler.UseCases.Tests.csproj` and its integration-test sibling reference `xunit.v3` explicitly. |
 | Assertions | **FluentAssertions** | Global-usinged into every test project via `Directory.Build.props` — no per-file `using FluentAssertions;` needed. |
 | Object generation | **AutoFixture** (+ `AutoFixture.Xunit3` for `[AutoData]`) | Referenced in the archetype's unit-test project as standard practice, for generating test data without hand-built object graphs. |
-| Integration DB fixtures | **Testcontainers** (`Testcontainers.PostgreSql` for Postgres, or the SQL Server/SQLite equivalent) | Spins up a real, disposable database container per test run — see `PostgresFixture.cs` in the crawler's integration tests. |
+| Integration DB fixtures | **Testcontainers** — `Testcontainers.PostgreSql`, `Testcontainers.MsSql` | Spins up a real, disposable database container per test run — see `PostgresFixture.cs` in the crawler's integration tests. **There is no Testcontainers module for SQLite** and none is needed: SQLite is in-process, so an integration test uses a temporary file or an in-memory database directly instead of a container. |
 | Coverage | **Coverlet** (`coverlet.msbuild` + `coverlet.collector`) | Wired at the repo level in `Directory.Build.props`, not per test project. |
 
 ### 6.2 Test Project Naming and Location
@@ -652,11 +672,19 @@ public void Constructor_should_throw_when_options_is_null() =>
                  .Should().Throw<ArgumentNullException>()
                  .WithParameterName("options");   // proves CallerArgumentExpression captured the name
 
+// Required state: the connection string is ABSENT FROM CONFIGURATION — nobody passed a bad
+// argument, so this must be InvalidOperationException, not ArgumentNullException.
 [Fact]
-public void AddCrawlerPostgreSql_should_throw_when_connection_string_is_missing() =>
-    FluentActions.Invoking(() => services.AddCrawlerPostgreSql(null!, configuration))
-                 .Should().Throw<InvalidOperationException>();   // required state, not an argument fault
+public void AddCrawlerPostgreSql_should_throw_when_connection_string_is_not_configured()
+{
+    var configuration = new ConfigurationBuilder().Build();   // no ConnectionStrings section at all
+
+    FluentActions.Invoking(() => services.AddCrawlerPostgreSql(configuration))
+                 .Should().Throw<InvalidOperationException>();
+}
 ```
+
+Note what the second test does **not** do: passing `null!` directly as a `connectionString` parameter would be a *caller* fault and must throw `ArgumentNullException`. To exercise the required-state path you have to make the **state** missing — an empty configuration — not hand the method a null argument. Getting this wrong in a test is the easiest way to enshrine the wrong exception type in the contract.
 
 `.WithParameterName(...)` is worth asserting on at least one call site per type: it is what catches a stray `myVar.NotNull(nameof(otherVar))` or an explicit name left behind after a rename.
 
@@ -671,7 +699,7 @@ The integration-test project may reference the unit-test project when it needs t
 <ProjectReference Include="..\UseCases.Tests\Ploch.Crawler.UseCases.Tests.csproj" />
 ```
 
-This is how the crawler's integration tests reuse the unit tests' `StubHttpMessageHandler` without a third `TestingSupport` project — acceptable for a two-test-project repo; once a third consumer appears, promote the shared fixtures into a dedicated `{Product}.TestingSupport` project instead.
+This is how the crawler's integration tests reuse the unit tests' `StubHttpMessageHandler` without a third `TestingSupport` project — acceptable for a two-test-project repo; once a third consumer appears, promote the shared fixtures into a dedicated `Ploch.{Product}.TestingSupport` project under `tests/` instead. `TestingSupport` is a **test-tree project kind**, not one of the [§3](#3-canonical-layers) source layers — the closed layer set governs `src/` only.
 
 ---
 
