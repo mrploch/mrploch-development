@@ -252,7 +252,7 @@ Every service-facing project lives under a `.Api.` segment, following the same g
 | `.Api.Contracts` | Request/response DTOs, published for consumers — the **only** `.Api.*` project other code may reference |
 | `.Api.Client` | Client for **this product's own** API — a client for someone else's API is `.Infrastructure.{Service}` instead |
 
-Neither worked example currently has an API surface; this section documents the pattern for the templates that will need it (e.g. an ASP.NET Core host added on top of the same `.Domain`/`.Data`/`.UseCases` stack).
+> **Provisional — not yet validated.** Unlike every other section here, `.Api.*` is backed by **neither a worked example in this workspace nor an external citation**: no MrPloch repo currently ships an API surface. It is a forward-looking extrapolation of the `.UI.` group rule to service hosts, recorded so template work has a starting point. **Treat it as a proposal, not a settled rule** — validate it against a real API project before generating templates from it, and expect it to change. Every other layer in [§3](#3-canonical-layers) meets the evidence bar; this one does not yet.
 
 ### 3.6 Cross-Cutting and Other Hosts
 
