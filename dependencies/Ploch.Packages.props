@@ -12,7 +12,7 @@
     -->
     <PropertyGroup>
         <PlochCommonPackagesVersion>4.0.47</PlochCommonPackagesVersion>
-        <PlochDataPackagesVersion>3.0.1</PlochDataPackagesVersion>
+        <PlochDataPackagesVersion>4.0.1</PlochDataPackagesVersion>
     </PropertyGroup>
 
     <!-- ploch-common -->
