@@ -8,7 +8,7 @@ These documents are the source of truth used to generate the `dotnet new` soluti
 
 | Document | Covers |
 |---|---|
-| [`project-structure-and-naming.md`](./project-structure-and-naming.md) | Repository shapes (single-project vs multi-project), the `Ploch.{Product}[.{Area}].{Layer}[.{Qualifier}]` naming pattern, the full canonical layer set (`.Domain`, `.Data`/`.Data.{Provider}`, `.UseCases`, `.UI.*`, `.Api.*`, `.Infrastructure`, `.Common`, `.Worker`, `.Functions`), the "Console App with Data Access" archetype end-to-end, `Ploch.Common` / `Ploch.Data` usage conventions (including the mandatory `ArgumentChecking` convention), testing standards, and a new-project checklist. |
+| [`project-structure-and-naming.md`](./project-structure-and-naming.md) | Repository shapes (single-project vs multi-project), the `Ploch.{Product}[.{Area}].{Layer}[.{Qualifier}]` naming pattern, the canonical layer set (`.Domain`, `.Data`/`.Data.{Provider}`, `.UseCases`, `.UI.*`, `.Infrastructure`, `.Common`, `.Worker`, `.Functions` — plus `.Api.*`, marked provisional and not yet validated), the "Console App with Data Access" archetype end-to-end, `Ploch.Common` / `Ploch.Data` usage conventions (including the mandatory `ArgumentChecking` convention), testing standards, and a new-project checklist. |
 
 ## Relationship to `.claude/rules/`
 

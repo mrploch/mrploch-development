@@ -160,7 +160,7 @@ Two further points from those guidelines are load-bearing here:
 
 ## 3. Canonical Layers
 
-This is a closed set. A project whose layer segment is not in this table needs a justification recorded in the repository's README before it is created.
+This is a closed set — **except [§3.5](#35-services--the-api-group), `.Api.*`, which is marked provisional below and is not yet part of the validated closed set.** A project whose layer segment is not in this table (nor `.Api.*`) needs a justification recorded in the repository's README before it is created.
 
 ### 3.1 Domain
 
