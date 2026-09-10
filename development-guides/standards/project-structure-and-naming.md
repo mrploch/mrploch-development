@@ -98,8 +98,10 @@ Everything else — the layer names, the four-names-one-string rule, the casing 
 ## 2. The Naming Pattern
 
 ```text
-Ploch.{Product}[.{Area}].{Layer}[.{Qualifier}]
+Ploch.{Product}[.{Area}].{Layer}[.{Qualifier}]...
 ```
+
+`{Qualifier}` may repeat — the trailing `...` above is the grammar's way of saying so. `Ploch.Crawler.Data.PostgreSql.IntegrationTests` chains two qualifiers (provider, then test kind).
 
 | Segment | Required | Meaning | Examples |
 |---|---|---|---|
@@ -116,6 +118,9 @@ Ploch.{Product}[.{Area}].{Layer}[.{Qualifier}]
 | `Ploch.Common` | `Ploch.{Product}` — the root package of a library family; no layer segment |
 | `Ploch.Common.Serialization` | `Ploch.{Product}.{FeatureArea}` |
 | `Ploch.Data.EFCore.SqLite` | `Ploch.{Product}.{FeatureArea}.{Qualifier}` |
+| `Ploch.TestingSupport` | `Ploch.{Product}` — another root shared-library package, same shape as `Ploch.Common` |
+
+`Ploch.Data.Model` (the marker-interface package consumed by every app's `.Domain` project, see [§3.1](#31-domain)) is the same shape: `Ploch.{Product}.{FeatureArea}`, not a `.Domain` layer of its own — it is a library, not an application.
 
 Do not force a library into `.Domain`/`.UseCases`/`.UI`; a shared library has no application layers of its own. The closed layer set in [§3](#3-canonical-layers) applies to application repos, and [§3.3](#33-application) says the same thing from the other direction.
 
