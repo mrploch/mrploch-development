@@ -12,7 +12,7 @@
     -->
     <PropertyGroup>
         <PlochCommonPackagesVersion>4.0.47</PlochCommonPackagesVersion>
-        <PlochDataPackagesVersion>3.0.1</PlochDataPackagesVersion>
+        <PlochDataPackagesVersion>4.0.1</PlochDataPackagesVersion>
     </PropertyGroup>
 
     <!-- ploch-common -->
@@ -57,13 +57,16 @@
     <!--
         ploch-data.
 
-        NOT listed, deliberately: Ploch.Data.GenericRepository.EFCore.SqLite, .SqlServer and
-        .Specification, and Ploch.Data.EFCore.IntegrationTesting.FluentAssertions. All four are
-        first-time publishes in ploch-data 4.0.0 and do not exist on nuget.org at any version
-        today (verified - api.nuget.org returns 404 for each id), so pinning them to
-        PlochDataPackagesVersion would point at a version that cannot be restored. Add them in
-        the same change that bumps PlochDataPackagesVersion to 4.0.0, once the release has
-        published. Raised by codeant-ai on mrploch/mrploch-development#15.
+        NOT listed, deliberately: Ploch.Data.GenericRepository.EFCore.Specification. It does not
+        exist on nuget.org at any version (verified - api.nuget.org returns 404), so pinning it to
+        PlochDataPackagesVersion would point at a version that cannot be restored. Add it once it
+        has actually been published. Raised by codeant-ai on mrploch/mrploch-development#15.
+
+        Ploch.Data.GenericRepository.EFCore.SqLite, .SqlServer, and
+        Ploch.Data.EFCore.IntegrationTesting.FluentAssertions were first-time publishes in
+        ploch-data 4.0.0 and are now listed below - confirmed present at 4.0.1 on nuget.org.
+        Raised by chatgpt-codex-connector and copilot-pull-request-reviewer on
+        mrploch/mrploch-development#20.
     -->
     <ItemGroup>
         <PackageVersion Include="Ploch.Data.Model" Version="$(PlochDataPackagesVersion)" />
@@ -71,9 +74,12 @@
         <PackageVersion Include="Ploch.Data.EFCore.SqLite" Version="$(PlochDataPackagesVersion)" />
         <PackageVersion Include="Ploch.Data.EFCore.SqlServer" Version="$(PlochDataPackagesVersion)" />
         <PackageVersion Include="Ploch.Data.EFCore.IntegrationTesting" Version="$(PlochDataPackagesVersion)" />
+        <PackageVersion Include="Ploch.Data.EFCore.IntegrationTesting.FluentAssertions" Version="$(PlochDataPackagesVersion)" />
         <PackageVersion Include="Ploch.Data.GenericRepository" Version="$(PlochDataPackagesVersion)" />
         <PackageVersion Include="Ploch.Data.GenericRepository.EFCore" Version="$(PlochDataPackagesVersion)" />
         <PackageVersion Include="Ploch.Data.GenericRepository.EFCore.IntegrationTesting" Version="$(PlochDataPackagesVersion)" />
+        <PackageVersion Include="Ploch.Data.GenericRepository.EFCore.SqLite" Version="$(PlochDataPackagesVersion)" />
+        <PackageVersion Include="Ploch.Data.GenericRepository.EFCore.SqlServer" Version="$(PlochDataPackagesVersion)" />
         <!-- Published at 3.0.1 but never listed here, so a consumer could not centrally version
              them. Same omission class as the one codeant-ai raised, found by diffing this list
              against the packable projects in ploch-data. -->
