@@ -92,9 +92,10 @@ jobs:
           elif [ -z "$SONAR_TOKEN" ]; then
             reason="the SONAR_TOKEN secret is not configured (see 'SonarCloud' in README.md)"
           else
-            # An organisation-level token reaches a new repository before its SonarCloud project exists.
-            status=$(curl --silent --output /dev/null --write-out '%{http_code}' --user "${SONAR_TOKEN}:" \
-              "https://sonarcloud.io/api/components/show?component=${SONAR_PROJECT_KEY}")
+            # An organisation-level token reaches a new repository before its SonarCloud project exists. The token is
+            # passed to curl through a config on standard input, so it never appears on a command line.
+            status=$(printf 'user = "%s:"\n' "$SONAR_TOKEN" | curl --silent --config - --output /dev/null \
+              --write-out '%{http_code}' "https://sonarcloud.io/api/components/show?component=${SONAR_PROJECT_KEY}")
             case "$status" in
               200) ;;
               404) reason="the SonarCloud project ${SONAR_PROJECT_KEY} does not exist yet (see 'SonarCloud' in README.md)" ;;
@@ -203,8 +204,11 @@ jobs:
           pipx run --spec "diff-cover==${DIFF_COVER_VERSION}" diff-cover coverage-report/Cobertura.xml \
             --compare-branch="origin/${BASE_REF}" \
             --format "markdown:coverage-report/diff-coverage.md,json:coverage-report/diff-coverage.json"
+          # Computed from the line counts rather than diff-cover's rounded percentage, so 79.6% never passes an 80% gate.
           # A pull request that changes no coverable lines has nothing to measure; treat it as fully covered.
-          percent=$(jq -r '.total_percent_covered // 100' coverage-report/diff-coverage.json)
+          percent=$(jq -r 'if (.total_num_lines // 0) == 0 then 100
+                           else ((.total_num_lines - .total_num_violations) * 10000 / .total_num_lines | floor) / 100 end' \
+                    coverage-report/diff-coverage.json)
           echo "percent=${percent}" >> "$GITHUB_OUTPUT"
 
       # One markdown document is both the job summary and the body of the sticky pull-request comment.
@@ -247,12 +251,14 @@ jobs:
           name: test-results
           path: "**/TestResults/*.trx"
           if-no-files-found: warn
+          overwrite: true
 
       - name: Upload coverage report
         if: ${{ !cancelled() && steps.coverage.outcome == 'success' }}
         uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: coverage-report
+          overwrite: true
           path: |
             coverage-report/
             **/CoverageResults/*.xml

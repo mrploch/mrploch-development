@@ -309,6 +309,8 @@ dotnet_diagnostic.rcs0023.severity = warning # Add parentheses to make the order
 dotnet_diagnostic.rcs0022.severity = none # Add parentheses according to operator precedence.
 
 ## Properties: 'dotnet_diagnostic.s'
+# S1309 (in-source suppressions are tracked) and S1451 (licence header required) are off: suppressions carry
+# their own justification, and the licence is declared once in LICENSE and the package metadata.
 dotnet_diagnostic.s1309.severity = none
 dotnet_diagnostic.s1451.severity = none
 dotnet_diagnostic.s3236.severity = none # Caller information arguments should not be provided explicitly - gives false positives for use of .net standard version of the Guard class
@@ -372,8 +374,7 @@ dotnet_diagnostic.ph2026.severity = none
 dotnet_diagnostic.ph2021.severity = none
 dotnet_diagnostic.ph2075.severity = none
 dotnet_diagnostic.ph2031.severity = suggestion
-dotnet_code_quality.ph2075.assembly_version = 
-2.0.1.0
+dotnet_code_quality.ph2075.assembly_version = 2.0.1.0
 dotnet_diagnostic.av2217.severity = none
 dotnet_diagnostic.av1706.severity = none
 

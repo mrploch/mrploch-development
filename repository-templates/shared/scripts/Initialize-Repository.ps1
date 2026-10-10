@@ -89,10 +89,13 @@ if (-not $ProductToken -or -not $RepositoryToken) {
 if (-not $RepositoryName) {
     $remote = git remote get-url origin 2>$null
     $RepositoryName = if ($remote) { ($remote -split '[/:]')[-1] -replace '\.git$', '' } else { Split-Path $root -Leaf }
+    if ($RepositoryName -notmatch '^[A-Za-z0-9._-]+$') {
+        throw "[Initialize-Repository] Cannot use '$RepositoryName' as the repository name; pass -RepositoryName explicitly."
+    }
     Write-Information "[Initialize-Repository] Repository name: $RepositoryName" -InformationAction Continue
 }
 
-if ($Name -match '(Tests|IntegrationTests|TestingSupport)$') {
+if ($Name -cmatch '(Tests|IntegrationTests|TestingSupport)$') {
     # Directory.Build.props treats projects whose names end in "Tests" as test projects, which are never packed.
     throw "[Initialize-Repository] '$Name' ends like a test project name; choose a product name such as 'Ploch.Orders'."
 }
@@ -109,6 +112,9 @@ function ConvertTo-KebabCase([string] $Value) {
 }
 $kebabToken = ConvertTo-KebabCase $ProductToken
 $productKebab = ConvertTo-KebabCase $product
+
+# Matches any form of a placeholder; used to find files and paths that still need converting.
+$anyTokenPattern = '(' + ((@($RepositoryToken, $kebabToken, $ProductToken) | ForEach-Object { [regex]::Escape($_) }) -join '|') + ')'
 
 $tokenPattern = '(?<repository>' + [regex]::Escape($RepositoryToken) + ')|(?<kebab>' + [regex]::Escape($kebabToken) + ')|(?<product>' +
     [regex]::Escape($ProductToken) + ')(?<identifier>(?=[A-Za-z0-9_]))?'
@@ -128,7 +134,7 @@ function Convert-TemplateToken([string] $Text) {
 $trackedFiles = @(git ls-files) | Where-Object { $_ -notin $templateOnlyFiles }
 $filesWithTokens = @($trackedFiles | Where-Object {
         $content = Get-Content -LiteralPath $_ -Raw -ErrorAction SilentlyContinue
-        $_ -cmatch $ProductToken -or ($content -and ($content.Contains($ProductToken) -or $content.Contains($RepositoryToken) -or $content.Contains($kebabToken)))
+        $_ -cmatch $anyTokenPattern -or ($content -and ($content.Contains($ProductToken) -or $content.Contains($RepositoryToken) -or $content.Contains($kebabToken)))
     })
 
 if ($filesWithTokens.Count -eq 0) {
@@ -188,8 +194,9 @@ function Format-UsingDirective([string] $Text) {
 }
 
 function Test-IsTextFile([string] $Path) {
+    # A NUL byte in the first 8000 bytes marks a binary file, the same heuristic git uses.
     $bytes = [System.IO.File]::ReadAllBytes((Join-Path $root $Path))
-    return -not ($bytes | Select-Object -First 8000 | Where-Object { $_ -eq 0 })
+    return [System.Array]::IndexOf($bytes, [byte]0, 0, [System.Math]::Min($bytes.Length, 8000)) -lt 0
 }
 
 # 1. File contents.
@@ -230,7 +237,7 @@ $pathsToRename = $trackedFiles |
             ($segments[0..($i - 1)] -join '/')
         }
     } |
-    Where-Object { (Split-Path $_ -Leaf) -cmatch $ProductToken } |
+    Where-Object { (Split-Path $_ -Leaf) -cmatch $anyTokenPattern } |
     Sort-Object -Unique |
     Sort-Object { ($_ -split '/').Count } -Descending
 

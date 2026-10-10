@@ -43,6 +43,12 @@ package versions, README, agent instructions) live only in each template reposit
 reports every shared file that differs from `shared/` and exits with code 1 if any does — for example after a fix
 was made directly in a template repository. Copy such a fix back into `shared/` rather than overwriting it.
 
+## Removing a shared file
+
+Delete it from `shared/` and add its path to `retired` in [`templates.json`](templates.json). The next sync deletes it
+from every template, and `-Check` reports any template that still has it. Remove the entry once every template has
+been synced.
+
 ## Template-specific exclusions
 
 [`templates.json`](templates.json) lists the templates. A template's `exclude` entries are shared files it keeps its

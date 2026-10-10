@@ -20,10 +20,11 @@ body:
   - type: input
     id: version
     attributes:
-      label: Package version
+      label: Version
+      description: The package or application version, or the commit you built from.
       placeholder: "1.2.3"
     validations:
-      required: true
+      required: false
   - type: input
     id: runtime
     attributes:

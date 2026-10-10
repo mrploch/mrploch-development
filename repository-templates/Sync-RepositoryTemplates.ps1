@@ -10,7 +10,8 @@
     (by default the parent of this repository, the mrploch workspace root).
 
     In shared files, __REPOSITORY__ is replaced with the target repository's name. Files a template lists under
-    "exclude" in templates.json are template-specific there and are left alone.
+    "exclude" in templates.json are template-specific there and are left alone. Paths listed under "retired" were
+    removed from shared/ and are deleted from the templates, so a removal propagates like any other change.
 
     The script changes only the working trees. Review, commit and open a pull request in each template repository
     as usual; the template's own CI (including the Template Bootstrap workflow) then verifies the result.
@@ -105,6 +106,24 @@ foreach ($entry in $templates) {
             New-Item -ItemType Directory -Force -Path (Split-Path $targetPath -Parent) | Out-Null
             [System.IO.File]::WriteAllBytes($targetPath, [byte[]]$expectedBytes)
             Write-Output "[Sync-RepositoryTemplates] $($entry.repository): updated $file ($state)"
+        }
+    }
+
+    foreach ($file in @($manifest.retired) | Where-Object { $_ -and $_ -notin $entry.exclude }) {
+        $targetPath = Join-Path $repositoryPath $file
+        if (-not (Test-Path -LiteralPath $targetPath)) {
+            continue
+        }
+
+        $changed++
+        if ($Check) {
+            Write-Output "[Sync-RepositoryTemplates] $($entry.repository): $file is retired but still present"
+            continue
+        }
+
+        if ($PSCmdlet.ShouldProcess("$($entry.repository)/$file", 'Delete retired file')) {
+            Remove-Item -LiteralPath $targetPath
+            Write-Output "[Sync-RepositoryTemplates] $($entry.repository): deleted retired $file"
         }
     }
 
