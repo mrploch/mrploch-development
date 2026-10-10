@@ -101,6 +101,11 @@ if ($Name -cmatch '(Tests|IntegrationTests|TestingSupport)$') {
 }
 
 $product = $Name.Substring('Ploch.'.Length)
+$reservedSegment = $product.Split('.') | Where-Object { $_ -match '^(CON|PRN|AUX|NUL|COM[0-9]|LPT[0-9])$' } | Select-Object -First 1
+if ($reservedSegment) {
+    # These names cannot be used for files or directories on Windows, and the projects are named after the product.
+    throw "[Initialize-Repository] '$reservedSegment' is a reserved file name on Windows; choose another product name."
+}
 if ($product -ceq $ProductToken) {
     throw "[Initialize-Repository] '$Name' is the template's own placeholder name; choose the new product's name."
 }
@@ -199,7 +204,26 @@ function Test-IsTextFile([string] $Path) {
     return [System.Array]::IndexOf($bytes, [byte]0, 0, [System.Math]::Min($bytes.Length, 8000)) -lt 0
 }
 
-# 1. File contents.
+# Set when -Confirm declines a change, so the template-only files are kept and the script can be run again.
+$declined = $false
+
+# 1. Template change-log entries: the new repository starts its own history. Deleted first, so they are neither
+#    rewritten nor renamed.
+$changeLogEntries = @($trackedFiles | Where-Object { $_ -like 'change-log/*.md' -and $_ -ne 'change-log/README.md' })
+foreach ($entry in $changeLogEntries) {
+    if ($PSCmdlet.ShouldProcess($entry, 'Delete template change-log entry')) {
+        git rm --quiet -- "$entry"
+        if ($LASTEXITCODE -ne 0) {
+            throw "[Initialize-Repository] git rm failed for '$entry'."
+        }
+    }
+    elseif (-not $WhatIfPreference) {
+        $declined = $true
+    }
+}
+$trackedFiles = @($trackedFiles | Where-Object { $_ -notin $changeLogEntries })
+
+# 2. File contents.
 foreach ($file in $trackedFiles) {
     if (-not (Test-IsTextFile $file)) {
         continue
@@ -222,14 +246,21 @@ foreach ($file in $trackedFiles) {
         $updated = Format-UsingDirective $updated
     }
 
-    if ($updated -cne $original -and $PSCmdlet.ShouldProcess($file, 'Replace template placeholders')) {
+    if ($updated -ceq $original) {
+        continue
+    }
+
+    if ($PSCmdlet.ShouldProcess($file, 'Replace template placeholders')) {
         # Text files in the template are UTF-8; keep a byte-order mark only where the file already had one.
         # Line endings are untouched because only the placeholder text is replaced.
         [System.IO.File]::WriteAllText($fullPath, $updated, [System.Text.UTF8Encoding]::new($hasBom))
     }
+    elseif (-not $WhatIfPreference) {
+        $declined = $true
+    }
 }
 
-# 2. File and directory names, deepest first so that renaming a directory never invalidates a pending path.
+# 3. File and directory names, deepest first so that renaming a directory never invalidates a pending path.
 $pathsToRename = $trackedFiles |
     ForEach-Object {
         $segments = $_ -split '/'
@@ -252,20 +283,17 @@ foreach ($path in $pathsToRename) {
             throw "[Initialize-Repository] git mv failed for '$path'."
         }
     }
-}
-
-# 3. Template change-log entries: the new repository starts its own history.
-foreach ($entry in $trackedFiles | Where-Object { $_ -like 'change-log/*.md' -and $_ -ne 'change-log/README.md' }) {
-    if ($PSCmdlet.ShouldProcess($entry, 'Delete template change-log entry')) {
-        git rm --quiet -- "$entry"
-        if ($LASTEXITCODE -ne 0) {
-            throw "[Initialize-Repository] git rm failed for '$entry'."
-        }
+    elseif (-not $WhatIfPreference) {
+        $declined = $true
     }
 }
 
-# 4. The template-only files, including this script: a repository is initialised exactly once.
-if (-not $KeepScript) {
+# 4. The template-only files, including this script: a repository is initialised exactly once. They are kept when a
+#    change was declined, because placeholders remain and the script is needed to finish the job.
+if ($declined) {
+    Write-Warning '[Initialize-Repository] Some changes were declined, so placeholders remain. The template files are kept; run the script again to finish.'
+}
+elseif (-not $KeepScript) {
     foreach ($file in $templateOnlyFiles | Where-Object { Test-Path -LiteralPath $_ }) {
         if ($PSCmdlet.ShouldProcess($file, 'Delete template-only file')) {
             git rm --quiet -- "$file"
@@ -276,7 +304,7 @@ if (-not $KeepScript) {
     }
 }
 
-if (-not $WhatIfPreference) {
+if (-not $WhatIfPreference -and -not $declined) {
     Write-Information @"
 [Initialize-Repository] Initialised as $Name ($RepositoryName).
 

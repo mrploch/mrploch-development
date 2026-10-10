@@ -4,16 +4,6 @@
     "layoutRules": {
       "newlineAtEndOfFile": "require"
     },
-    "spacingRules": {
-      "blankLinesBetweenUsingGroups": "require",
-      "blankLinesBeforeFirstDeclaration": "require",
-      "blankLinesAfterUsingGroups": "require",
-      "blankLinesAfterNamespace": "require",
-      "blankLinesAfterTypeDeclaration": "require",
-      "blankLinesAfterFieldDeclaration": "require",
-      "blankLinesAfterPropertyDeclaration": "require",
-      "blankLinesAfterMethodDeclaration": "require"
-    },
     "readabilityRules": {
       "allowBuiltInTypeAliases": true
     }

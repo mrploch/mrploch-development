@@ -159,7 +159,7 @@ jobs:
         id: test
         run: |
           dotnet test "$SOLUTION" --no-build --configuration Release \
-            --logger "trx;LogFileName=TestResults.trx" \
+            --logger "trx;LogFilePrefix=TestResults" \
             /p:CollectCoverage=true \
             /p:CoverletOutput=./CoverageResults/ \
             "/p:CoverletOutputFormat=cobertura%2copencover" \
