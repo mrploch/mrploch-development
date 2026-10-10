@@ -56,9 +56,14 @@ if ($Template -and $templates.Count -ne $Template.Count) {
     throw "[Sync-RepositoryTemplates] Unknown template in '$($Template -join ', ')'. Known templates: $known."
 }
 
-$sharedFiles = Get-ChildItem -LiteralPath $sharedRoot -Recurse -File -Force |
-    ForEach-Object { [System.IO.Path]::GetRelativePath($sharedRoot, $_.FullName).Replace('\', '/') } |
-    Sort-Object
+# The files git knows about under shared/ (committed, or new and not ignored), relative to shared/. Ignored local
+# files such as editor backups (*.bak) are never synced, and a file deleted but not yet staged is skipped.
+$sharedFiles = @(git -C $sharedRoot ls-files --cached --others --exclude-standard -- . |
+        Where-Object { Test-Path -LiteralPath (Join-Path $sharedRoot $_) -PathType Leaf } |
+        Sort-Object -Unique)
+if ($LASTEXITCODE -ne 0 -or $sharedFiles.Count -eq 0) {
+    throw "[Sync-RepositoryTemplates] Could not list the files under $sharedRoot with git."
+}
 
 # The canonical bytes for one template: the shared file as is, or with __REPOSITORY__ replaced by the template's
 # repository name. A byte-order mark is kept exactly when the canonical file has one.
@@ -122,7 +127,8 @@ foreach ($entry in $templates) {
         }
 
         if ($PSCmdlet.ShouldProcess("$($entry.repository)/$file", 'Delete retired file')) {
-            Remove-Item -LiteralPath $targetPath
+            # -Force: a read-only or hidden retired file must not stop the sync of the remaining templates.
+            Remove-Item -LiteralPath $targetPath -Force
             Write-Output "[Sync-RepositoryTemplates] $($entry.repository): deleted retired $file"
         }
     }
