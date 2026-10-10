@@ -25,6 +25,8 @@
     It refuses to run with uncommitted changes, so the result can be reviewed with `git status` and `git diff`,
     and undone with `git reset --hard HEAD` (renames are staged by `git mv`, so `git checkout .` is not enough).
     It is idempotent: a repository with no placeholders left is reported and left untouched.
+    With -Confirm it asks about every change before making any; declining one leaves the repository unchanged, so
+    the script can simply be run again.
 
 .PARAMETER Name
     The product's root name, which becomes the solution, project, assembly, package and namespace prefix.
@@ -204,22 +206,20 @@ function Test-IsTextFile([string] $Path) {
     return [System.Array]::IndexOf($bytes, [byte]0, 0, [System.Math]::Min($bytes.Length, 8000)) -lt 0
 }
 
-# Set when -Confirm declines a change, so the template-only files are kept and the script can be run again.
-$declined = $false
+# Every change is planned first and applied only once all of them are confirmed. A change declined under -Confirm
+# therefore leaves the working tree untouched, so the script can simply be run again; applying the accepted part
+# would leave a dirty tree that the clean-tree check above refuses to resume from.
+# Each change is recorded as data and applied by Invoke-PlannedChange below.
+$plan = [System.Collections.Generic.List[object]]::new()
+function Add-PlannedChange([string] $Kind, [string] $Target, [string] $Action, [hashtable] $Data = @{}) {
+    $plan.Add([pscustomobject]@{ Kind = $Kind; Target = $Target; Action = $Action; Data = $Data })
+}
 
 # 1. Template change-log entries: the new repository starts its own history. Deleted first, so they are neither
 #    rewritten nor renamed.
 $changeLogEntries = @($trackedFiles | Where-Object { $_ -like 'change-log/*.md' -and $_ -ne 'change-log/README.md' })
 foreach ($entry in $changeLogEntries) {
-    if ($PSCmdlet.ShouldProcess($entry, 'Delete template change-log entry')) {
-        git rm --quiet -- "$entry"
-        if ($LASTEXITCODE -ne 0) {
-            throw "[Initialize-Repository] git rm failed for '$entry'."
-        }
-    }
-    elseif (-not $WhatIfPreference) {
-        $declined = $true
-    }
+    Add-PlannedChange 'Delete' $entry 'Delete template change-log entry' @{ Paths = @($entry) }
 }
 $trackedFiles = @($trackedFiles | Where-Object { $_ -notin $changeLogEntries })
 
@@ -250,14 +250,7 @@ foreach ($file in $trackedFiles) {
         continue
     }
 
-    if ($PSCmdlet.ShouldProcess($file, 'Replace template placeholders')) {
-        # Text files in the template are UTF-8; keep a byte-order mark only where the file already had one.
-        # Line endings are untouched because only the placeholder text is replaced.
-        [System.IO.File]::WriteAllText($fullPath, $updated, [System.Text.UTF8Encoding]::new($hasBom))
-    }
-    elseif (-not $WhatIfPreference) {
-        $declined = $true
-    }
+    Add-PlannedChange 'Write' $file 'Replace template placeholders' @{ FullPath = $fullPath; Content = $updated; HasBom = $hasBom }
 }
 
 # 3. File and directory names, deepest first so that renaming a directory never invalidates a pending path.
@@ -277,35 +270,75 @@ foreach ($path in $pathsToRename) {
     $newLeaf = Convert-TemplateToken $leaf
     $parent = Split-Path $path -Parent
     $newPath = if ($parent) { "$parent/$newLeaf" } else { $newLeaf }
-    if ($PSCmdlet.ShouldProcess($path, "Rename to $newLeaf")) {
-        git mv -- "$path" "$newPath"
-        if ($LASTEXITCODE -ne 0) {
-            throw "[Initialize-Repository] git mv failed for '$path'."
-        }
-    }
-    elseif (-not $WhatIfPreference) {
+    Add-PlannedChange 'Rename' $path "Rename to $newLeaf" @{ NewPath = $newPath }
+}
+
+# 4. The template-only files, including this script: a repository is initialised exactly once. One change for the
+#    whole set, because deleting only some of them would leave tooling that cannot resume.
+$present = @($templateOnlyFiles | Where-Object { Test-Path -LiteralPath $_ })
+if (-not $KeepScript -and $present.Count -gt 0) {
+    Add-PlannedChange 'Delete' ($present -join ', ') 'Delete template-only files' @{ Paths = $present }
+}
+
+# Ask about every change before making any. -WhatIf lists them all; -Confirm stops asking at the first "No", since
+# nothing will be changed after that.
+$declined = $false
+foreach ($change in $plan) {
+    if (-not $PSCmdlet.ShouldProcess($change.Target, $change.Action)) {
         $declined = $true
+        if (-not $WhatIfPreference) {
+            break
+        }
     }
 }
-
-# 4. The template-only files, including this script: a repository is initialised exactly once. They are kept when a
-#    change was declined, because placeholders remain and the script is needed to finish the job.
-if ($declined) {
-    Write-Warning '[Initialize-Repository] Some changes were declined, so placeholders remain. The template files are kept; run the script again to finish.'
+if ($WhatIfPreference) {
+    return
 }
-elseif (-not $KeepScript) {
-    # One confirmation for the whole set: deleting only some of these files would leave tooling that cannot resume.
-    $present = @($templateOnlyFiles | Where-Object { Test-Path -LiteralPath $_ })
-    if ($present.Count -gt 0 -and $PSCmdlet.ShouldProcess(($present -join ', '), 'Delete template-only files')) {
-        git rm --quiet -- @present
-        if ($LASTEXITCODE -ne 0) {
-            throw "[Initialize-Repository] git rm failed for the template-only files; delete them manually: $($present -join ', ')."
+if ($declined) {
+    Write-Warning '[Initialize-Repository] A change was declined, so nothing was changed. Run the script again to initialise the repository.'
+    return
+}
+
+function Invoke-PlannedChange($Change) {
+    switch ($Change.Kind) {
+        'Delete' {
+            git rm --quiet -- @($Change.Data.Paths)
+            if ($LASTEXITCODE -ne 0) {
+                throw "git rm failed for $($Change.Target)."
+            }
+        }
+        'Write' {
+            # Text files in the template are UTF-8; keep a byte-order mark only where the file already had one.
+            # Line endings are untouched because only the placeholder text is replaced.
+            [System.IO.File]::WriteAllText($Change.Data.FullPath, $Change.Data.Content, [System.Text.UTF8Encoding]::new($Change.Data.HasBom))
+        }
+        'Rename' {
+            git mv -- "$($Change.Target)" "$($Change.Data.NewPath)"
+            if ($LASTEXITCODE -ne 0) {
+                throw "git mv failed for '$($Change.Target)'."
+            }
+        }
+        default {
+            throw "Unknown planned change '$($Change.Kind)'."
         }
     }
 }
 
-if (-not $WhatIfPreference -and -not $declined) {
-    Write-Information @"
+# The prompts can take a while to answer; make sure nothing else changed the tree in the meantime.
+if (git status --porcelain) {
+    throw '[Initialize-Repository] The working tree changed while the changes were being confirmed. Nothing was changed; commit or stash the other changes and run the script again.'
+}
+
+try {
+    foreach ($change in $plan) {
+        Invoke-PlannedChange $change
+    }
+}
+catch {
+    throw "[Initialize-Repository] $($_.Exception.Message) The repository is partly initialised: undo with 'git reset --hard HEAD', fix the cause and run the script again."
+}
+
+Write-Information @"
 [Initialize-Repository] Initialised as $Name ($RepositoryName).
 
 Next steps:
@@ -314,4 +347,3 @@ Next steps:
   3. Commit:                  git add --all; git commit -m "chore: initialise repository from template"
   4. Finish the owner setup in README.md (SonarCloud project, secrets, branch protection).
 "@ -InformationAction Continue
-}

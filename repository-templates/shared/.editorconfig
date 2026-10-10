@@ -294,9 +294,6 @@ dotnet_diagnostic.ide0018.severity = warning # Inline variable declaration
 # the full rationale and the trade-off (lazy-LINQ misuse is no longer caught by IDE0058).
 dotnet_diagnostic.ide0058.severity = none
 
-## Properties: 'dotnet_diagnostic.nu'
-dotnet_diagnostic.nu1507.severity = none # Use nameof operator
-
 ## Properties: 'dotnet_diagnostic.rcs' - Roslynator
 dotnet_diagnostic.rcs1169.severity = suggestion # Make field read-only
 dotnet_diagnostic.rcs1194.severity = suggestion # Implement standard Exception constructors
@@ -305,8 +302,6 @@ roslynator_block_braces_style = single_line_when_empty
 # Format accessor's braces on single line or multiple lines
 # Default value is multi_line
 roslynator_accessor_braces_style = single_line_when_expression_is_on_single_line
-dotnet_diagnostic.rcs0023.severity = warning # Add parentheses to make the order of operations explicit in conditional expressions.
-dotnet_diagnostic.rcs0022.severity = none # Add parentheses according to operator precedence.
 
 ## Properties: 'dotnet_diagnostic.s'
 # S1309 (in-source suppressions are tracked) and S1451 (licence header required) are off: suppressions carry
