@@ -68,5 +68,10 @@ jobs:
           fi
           test ! -e scripts/Initialize-Repository.ps1
           test ! -e scripts/template.json
-          dotnet build Ploch.Bootstrap.Smoke.slnx --configuration Release
-          dotnet test Ploch.Bootstrap.Smoke.slnx --no-build --configuration Release
+          solution=""
+          for candidate in Ploch.Bootstrap.Smoke.slnx Ploch.Bootstrap.Smoke.sln; do
+            if [ -f "$candidate" ]; then solution="$candidate"; break; fi
+          done
+          test -n "$solution"
+          dotnet build "$solution" --configuration Release
+          dotnet test "$solution" --no-build --configuration Release

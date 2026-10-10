@@ -294,12 +294,12 @@ if ($declined) {
     Write-Warning '[Initialize-Repository] Some changes were declined, so placeholders remain. The template files are kept; run the script again to finish.'
 }
 elseif (-not $KeepScript) {
-    foreach ($file in $templateOnlyFiles | Where-Object { Test-Path -LiteralPath $_ }) {
-        if ($PSCmdlet.ShouldProcess($file, 'Delete template-only file')) {
-            git rm --quiet -- "$file"
-            if ($LASTEXITCODE -ne 0) {
-                throw "[Initialize-Repository] git rm failed for '$file'; delete it manually."
-            }
+    # One confirmation for the whole set: deleting only some of these files would leave tooling that cannot resume.
+    $present = @($templateOnlyFiles | Where-Object { Test-Path -LiteralPath $_ })
+    if ($present.Count -gt 0 -and $PSCmdlet.ShouldProcess(($present -join ', '), 'Delete template-only files')) {
+        git rm --quiet -- @present
+        if ($LASTEXITCODE -ne 0) {
+            throw "[Initialize-Repository] git rm failed for the template-only files; delete them manually: $($present -join ', ')."
         }
     }
 }
