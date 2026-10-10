@@ -1,0 +1,39 @@
+# Keeps NuGet packages and the SHA-pinned GitHub Actions current.
+# Dependabot pull requests receive no repository secrets; the Build workflow still builds, tests and measures
+# coverage for them, and skips SonarCloud with a visible warning.
+version: 2
+updates:
+  - package-ecosystem: "nuget"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    groups:
+      analysers:
+        patterns:
+          - "Microsoft.CodeAnalysis.*"
+          - "Microsoft.VisualStudio.Threading.Analyzers"
+          - "Roslynator.*"
+          - "SonarAnalyzer.*"
+          - "StyleCop.*"
+      testing:
+        patterns:
+          - "AutoFixture*"
+          - "coverlet.*"
+          - "FluentAssertions*"
+          - "Microsoft.NET.Test.Sdk"
+          - "xunit*"
+
+  - package-ecosystem: "dotnet-sdk"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    groups:
+      github-actions:
+        patterns:
+          - "*"

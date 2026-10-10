@@ -1,0 +1,23 @@
+{
+  "$comment": "The canonical mrploch .NET GitHub template repositories. Sync-RepositoryTemplates.ps1 copies shared/ into each of them. See README.md.",
+  "templates": [
+    {
+      "name": "library",
+      "repository": "ploch-templates-dotnet-repository",
+      "description": "Simple .NET library: packable, NuGet trusted-publishing release workflow.",
+      "exclude": []
+    },
+    {
+      "name": "console",
+      "repository": "ploch-templates-dotnet-console",
+      "description": ".NET console application: Spectre.Console.Cli host with dependency injection.",
+      "exclude": []
+    },
+    {
+      "name": "console-data",
+      "repository": "ploch-templates-dotnet-console-data",
+      "description": ".NET console application with an EF Core data layer on Ploch.Data.",
+      "exclude": [ ".config/dotnet-tools.json" ]
+    }
+  ]
+}
