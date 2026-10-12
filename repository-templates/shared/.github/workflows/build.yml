@@ -99,9 +99,14 @@ jobs:
             case "$status" in
               200) ;;
               404) reason="the SonarCloud project ${SONAR_PROJECT_KEY} does not exist yet (see 'SonarCloud' in README.md)" ;;
-              # A rejected token is an owner credential problem, not a code problem: skip SonarCloud so the build and
-              # tests still run, and surface the rotation as a warning instead of hiding every later step.
-              401|403) reason="SonarCloud rejected SONAR_TOKEN with HTTP ${status}; rotate the token (see 'SonarCloud' in README.md)" ;;
+              # An invalid or expired token is an owner credential problem, not a code problem: skip SonarCloud so the
+              # build and tests still run, and surface the rotation as a warning instead of hiding every later step.
+              401) reason="SonarCloud rejected SONAR_TOKEN as invalid or expired (HTTP 401); rotate the token (see 'SonarCloud' in README.md)" ;;
+              # A valid token without access would silently drop the quality gate on an established project, so fail.
+              403)
+                echo "::error title=SonarCloud access denied::SONAR_TOKEN is valid but cannot browse ${SONAR_PROJECT_KEY} (HTTP 403). Give the token's account Browse permission on the project."
+                exit 1
+                ;;
               *)
                 echo "::error title=SonarCloud unreachable::Checking the SonarCloud project ${SONAR_PROJECT_KEY} returned HTTP ${status}."
                 exit 1
