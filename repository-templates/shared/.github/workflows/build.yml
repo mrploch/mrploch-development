@@ -99,8 +99,11 @@ jobs:
             case "$status" in
               200) ;;
               404) reason="the SonarCloud project ${SONAR_PROJECT_KEY} does not exist yet (see 'SonarCloud' in README.md)" ;;
+              # A rejected token is an owner credential problem, not a code problem: skip SonarCloud so the build and
+              # tests still run, and surface the rotation as a warning instead of hiding every later step.
+              401|403) reason="SonarCloud rejected SONAR_TOKEN with HTTP ${status}; rotate the token (see 'SonarCloud' in README.md)" ;;
               *)
-                echo "::error title=SonarCloud unreachable::Checking the SonarCloud project ${SONAR_PROJECT_KEY} returned HTTP ${status}. A 401 or 403 means SONAR_TOKEN is invalid or lacks access."
+                echo "::error title=SonarCloud unreachable::Checking the SonarCloud project ${SONAR_PROJECT_KEY} returned HTTP ${status}."
                 exit 1
                 ;;
             esac
