@@ -1,0 +1,77 @@
+# Proves the template still works as a template: initialises a copy under a new name with
+# scripts/Initialize-Repository.ps1, checks that no placeholder survived, then builds and tests the copy.
+#
+# Template-only: Initialize-Repository.ps1 deletes this workflow together with itself.
+name: Template Bootstrap
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+jobs:
+  bootstrap:
+    name: Template bootstrap
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          global-json-file: global.json
+
+      - name: Initialise a copy of the template
+        shell: pwsh
+        run: |
+          $target = Join-Path $env:RUNNER_TEMP 'ploch-bootstrap-smoke'
+          git ls-files | ForEach-Object {
+              $destination = Join-Path $target $_
+              New-Item -ItemType Directory -Force -Path (Split-Path $destination) | Out-Null
+              Copy-Item -LiteralPath $_ -Destination $destination
+          }
+          Set-Location $target
+          git init --quiet --initial-branch main
+          git add --all
+          git -c user.name=ci -c user.email=ci@localhost commit --quiet --message 'Template copy'
+          ./scripts/Initialize-Repository.ps1 -Name 'Ploch.Bootstrap.Smoke' -RepositoryName 'ploch-bootstrap-smoke'
+          "BOOTSTRAP_DIR=$target" | Out-File -FilePath $env:GITHUB_ENV -Append
+
+      - name: Build and test the initialised copy
+        working-directory: ${{ env.BOOTSTRAP_DIR }}
+        run: |
+          set -euo pipefail
+          product_token=$(jq -r .productToken "$GITHUB_WORKSPACE/scripts/template.json")
+          repository_token=$(jq -r .repositoryToken "$GITHUB_WORKSPACE/scripts/template.json")
+          kebab_token=$(echo "$product_token" | sed -E 's/([a-z0-9])([A-Z])/\1-\2/g' | tr '[:upper:]' '[:lower:]')
+          if git grep -n -I -e "$product_token" -e "$repository_token" -e "$kebab_token"; then
+            echo "::error title=Template tokens left behind::Initialize-Repository.ps1 did not replace every template token."
+            exit 1
+          fi
+          test ! -e scripts/Initialize-Repository.ps1
+          test ! -e scripts/template.json
+          solution=""
+          for candidate in Ploch.Bootstrap.Smoke.slnx Ploch.Bootstrap.Smoke.sln; do
+            if [ -f "$candidate" ]; then solution="$candidate"; break; fi
+          done
+          test -n "$solution"
+          dotnet build "$solution" --configuration Release
+          dotnet test "$solution" --no-build --configuration Release

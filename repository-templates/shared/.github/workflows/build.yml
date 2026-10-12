@@ -1,0 +1,281 @@
+# Build, test, coverage and SonarCloud analysis.
+#
+# Results that need write access (the test-results check and the sticky coverage comment) are published by
+# pr-report.yml, which runs on `workflow_run` after this workflow. That split keeps this workflow read-only, so
+# pull requests from forks and Dependabot get the same build, tests and coverage summary as everyone else.
+name: Build
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+# Least privilege: checkout only. Nothing in this workflow writes to the repository, its checks or its pull requests.
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  # Superseded pull-request runs are cancelled; runs on main always complete.
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  DOTNET_NOLOGO: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  # The single list of files excluded from coverage. Coverlet applies it while collecting, and SonarCloud
+  # receives the same list, so the job summary, the pull-request comment and SonarCloud report the same numbers.
+  COVERAGE_EXCLUDE: "**/Migrations/*.cs,**/*.Designer.cs,**/*.g.cs"
+  # Minimum coverage of the lines a pull request changes. Override per repository with the
+  # DIFF_COVERAGE_THRESHOLD variable; SonarCloud's quality gate enforces its own new-code threshold separately.
+  DIFF_COVERAGE_THRESHOLD: ${{ vars.DIFF_COVERAGE_THRESHOLD || '80' }}
+  DIFF_COVER_VERSION: "10.6.0"
+  SONAR_PROJECT_KEY: ${{ vars.SONAR_PROJECT_KEY || format('{0}_{1}', github.repository_owner, github.event.repository.name) }}
+  SONAR_ORGANIZATION: ${{ vars.SONAR_ORGANIZATION || github.repository_owner }}
+
+jobs:
+  build:
+    name: Build, test and analyse
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Full history: Nerdbank.GitVersioning computes the version from commit height, and diff coverage
+          # compares the pull request with its base branch.
+          fetch-depth: 0
+          persist-credentials: false
+
+      # The repository has exactly one solution at its root; finding it keeps this file identical in every repository.
+      - name: Locate the solution
+        run: |
+          shopt -s nullglob
+          solutions=(*.slnx *.sln)
+          if [ ${#solutions[@]} -ne 1 ]; then
+            echo "::error title=Solution not found::Expected exactly one .slnx or .sln file at the repository root; found ${#solutions[@]}."
+            exit 1
+          fi
+          echo "SOLUTION=${solutions[0]}" >> "$GITHUB_ENV"
+
+      - name: Setup Java (SonarScanner)
+        uses: actions/setup-java@dd06d9cba3e5552c54d9f8ea23572deb30010f7c # v6.0.0
+        with:
+          distribution: zulu
+          java-version: "17"
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@a98b56852c35b8e3190ac28c8c2271da59106c68 # v6.0.0
+        with:
+          global-json-file: global.json
+
+      - name: Restore .NET tools
+        run: dotnet tool restore
+
+      # SonarCloud needs SONAR_TOKEN. Pull requests from forks and Dependabot never receive repository secrets,
+      # and a repository freshly created from the template has not configured SonarCloud yet. Those runs skip
+      # the analysis with a visible warning instead of failing; every other run analyses, and fails if analysis fails.
+      - name: Decide whether SonarCloud runs
+        id: sonar
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          IS_FORK: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != github.repository }}
+          IS_DEPENDABOT: ${{ github.actor == 'dependabot[bot]' }}
+        run: |
+          reason=""
+          if [ "$IS_FORK" = "true" ]; then
+            reason="pull requests from forks do not receive repository secrets"
+          elif [ "$IS_DEPENDABOT" = "true" ]; then
+            reason="Dependabot pull requests do not receive repository secrets"
+          elif [ -z "$SONAR_TOKEN" ]; then
+            reason="the SONAR_TOKEN secret is not configured (see 'SonarCloud' in README.md)"
+          else
+            # An organisation-level token reaches a new repository before its SonarCloud project exists. The token is
+            # passed to curl through a config on standard input, so it never appears on a command line.
+            status=$(printf 'user = "%s:"\n' "$SONAR_TOKEN" | curl --silent --config - --output /dev/null \
+              --write-out '%{http_code}' "https://sonarcloud.io/api/components/show?component=${SONAR_PROJECT_KEY}")
+            case "$status" in
+              200) ;;
+              404) reason="the SonarCloud project ${SONAR_PROJECT_KEY} does not exist yet (see 'SonarCloud' in README.md)" ;;
+              *)
+                echo "::error title=SonarCloud unreachable::Checking the SonarCloud project ${SONAR_PROJECT_KEY} returned HTTP ${status}. A 401 or 403 means SONAR_TOKEN is invalid or lacks access."
+                exit 1
+                ;;
+            esac
+          fi
+
+          if [ -n "$reason" ]; then
+            echo "run=false" >> "$GITHUB_OUTPUT"
+            echo "::warning title=SonarCloud analysis skipped::SonarCloud analysis did not run because ${reason}."
+            echo "> [!WARNING]" >> "$GITHUB_STEP_SUMMARY"
+            echo "> SonarCloud analysis skipped: ${reason}." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Restore
+        run: dotnet restore "$SOLUTION"
+
+      - name: Compute version
+        id: version
+        run: |
+          version=$(dotnet nbgv get-version --variable NuGetPackageVersion)
+          echo "nuget=$version" >> "$GITHUB_OUTPUT"
+          echo "Version: $version"
+
+      # The warning gate. SonarScanner's MSBuild integration turns TreatWarningsAsErrors off for the builds it
+      # instruments, so warnings are enforced here, in an ordinary Release build, before the scanner starts.
+      - name: Build (warnings as errors)
+        run: dotnet build "$SOLUTION" --no-restore --configuration Release
+
+      # Settings are passed inline: the .NET scanner does not read sonar-project.properties, and the file breaks
+      # its post-processing. The project key is derived from the repository name, so new repositories need no edit.
+      - name: SonarScanner begin
+        id: sonar-begin
+        if: steps.sonar.outputs.run == 'true'
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          VERSION: ${{ steps.version.outputs.nuget }}
+        run: >
+          dotnet sonarscanner begin
+          /k:"$SONAR_PROJECT_KEY"
+          /o:"$SONAR_ORGANIZATION"
+          /v:"$VERSION"
+          /d:sonar.token="$SONAR_TOKEN"
+          /d:sonar.host.url="https://sonarcloud.io"
+          /d:sonar.cs.opencover.reportsPaths="**/CoverageResults/coverage*.opencover.xml"
+          /d:sonar.cs.vstest.reportsPaths="**/TestResults/*.trx"
+          /d:sonar.coverage.exclusions="$COVERAGE_EXCLUDE"
+          /d:sonar.qualitygate.wait=true
+
+      # Rebuilds from scratch so the scanner sees every compilation; skipped when SonarCloud does not run.
+      - name: Build for SonarCloud
+        if: steps.sonar-begin.outcome == 'success'
+        run: dotnet build "$SOLUTION" --no-restore --no-incremental --configuration Release
+
+      - name: Test
+        id: test
+        run: |
+          dotnet test "$SOLUTION" --no-build --configuration Release \
+            --logger "trx;LogFilePrefix=TestResults" \
+            /p:CollectCoverage=true \
+            /p:CoverletOutput=./CoverageResults/ \
+            "/p:CoverletOutputFormat=cobertura%2copencover" \
+            "/p:ExcludeByFile=\"${COVERAGE_EXCLUDE//,/%2c}\""
+
+      # Tests that pass without producing coverage would otherwise skip every coverage step and leave the build
+      # green with nothing measured (for example, a test project missing from the solution).
+      - name: Check that coverage was collected
+        if: steps.test.outcome == 'success'
+        run: |
+          if [ -z "$(find . -path '*/CoverageResults/coverage*.cobertura.xml' -print -quit)" ]; then
+            echo "::error title=No coverage collected::The tests passed but produced no coverage report. Check that every test project is in $SOLUTION and references coverlet.msbuild (Directory.Build.props adds it to projects whose names end in Tests)."
+            exit 1
+          fi
+
+      # Runs after failed tests too, so a red build still has its analysis; skipped when begin did not run.
+      # sonar.qualitygate.wait makes this step fail when the SonarCloud quality gate fails.
+      - name: SonarScanner end
+        if: ${{ !cancelled() && steps.sonar-begin.outcome == 'success' }}
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        run: dotnet sonarscanner end /d:sonar.token="$SONAR_TOKEN"
+
+      - name: Generate coverage report
+        id: coverage
+        if: ${{ !cancelled() && hashFiles('**/CoverageResults/coverage*.cobertura.xml') != '' }}
+        run: |
+          dotnet reportgenerator \
+            "-reports:**/CoverageResults/coverage*.cobertura.xml" \
+            "-targetdir:coverage-report" \
+            "-reporttypes:Cobertura;MarkdownSummaryGithub;Html" \
+            "-verbosity:Warning"
+          # The free edition prints a sponsor link instead of method coverage; drop that row.
+          sed -i '/Method coverage:/d' coverage-report/SummaryGithub.md
+
+      - name: Measure coverage of changed lines
+        id: diff-coverage
+        if: ${{ !cancelled() && github.event_name == 'pull_request' && steps.coverage.outcome == 'success' }}
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          pipx run --spec "diff-cover==${DIFF_COVER_VERSION}" diff-cover coverage-report/Cobertura.xml \
+            --compare-branch="origin/${BASE_REF}" \
+            --format "markdown:coverage-report/diff-coverage.md,json:coverage-report/diff-coverage.json"
+          # Computed from the line counts rather than diff-cover's rounded percentage, so 79.6% never passes an 80% gate.
+          # A pull request that changes no coverable lines has nothing to measure; treat it as fully covered.
+          percent=$(jq -r 'if (.total_num_lines // 0) == 0 then 100
+                           else ((.total_num_lines - .total_num_violations) * 10000 / .total_num_lines | floor) / 100 end' \
+                    coverage-report/diff-coverage.json)
+          echo "percent=${percent}" >> "$GITHUB_OUTPUT"
+
+      # One markdown document is both the job summary and the body of the sticky pull-request comment.
+      - name: Write coverage summary
+        if: ${{ !cancelled() && steps.coverage.outcome == 'success' }}
+        env:
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          {
+            echo "<!-- ploch-coverage-report -->"
+            echo "## Code coverage"
+            echo
+            echo "Commit ${HEAD_SHA}. The full HTML report is in the \`coverage-report\` artefact of [this run](${RUN_URL})."
+            echo
+            if [ -f coverage-report/diff-coverage.md ]; then
+              echo "### Lines changed in this pull request"
+              echo
+              echo "Required: **${DIFF_COVERAGE_THRESHOLD}%**. Files listed with missing lines are where tests are needed."
+              echo
+              # Demote diff-cover's headings so they nest under this section.
+              sed -e 's/^## /#### /' -e 's/^# .*$//' coverage-report/diff-coverage.md
+              echo
+            fi
+            echo "### Whole codebase"
+            echo
+            sed -e 's/^## /#### /' -e 's/^# .*$//' coverage-report/SummaryGithub.md
+          } > coverage-report/comment.md
+          cat coverage-report/comment.md >> "$GITHUB_STEP_SUMMARY"
+          # Metadata for pr-report.yml, which validates it against the pull request before commenting.
+          if [ -n "$PR_NUMBER" ]; then
+            echo "$PR_NUMBER" > coverage-report/pr-number.txt
+          fi
+
+      - name: Upload test results
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: test-results
+          path: "**/TestResults/*.trx"
+          if-no-files-found: warn
+          overwrite: true
+
+      - name: Upload coverage report
+        if: ${{ !cancelled() && steps.coverage.outcome == 'success' }}
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        with:
+          name: coverage-report
+          overwrite: true
+          path: |
+            coverage-report/
+            **/CoverageResults/*.xml
+
+      # Last, so the report and comment exist even when the threshold fails the job.
+      - name: Enforce coverage of changed lines
+        if: ${{ !cancelled() && steps.diff-coverage.outcome == 'success' }}
+        env:
+          PERCENT: ${{ steps.diff-coverage.outputs.percent }}
+        run: |
+          if ! [[ "$DIFF_COVERAGE_THRESHOLD" =~ ^[0-9]+([.][0-9]+)?$ ]] || awk -v t="$DIFF_COVERAGE_THRESHOLD" 'BEGIN { exit !(t > 100) }'; then
+            echo "::error title=Invalid coverage threshold::DIFF_COVERAGE_THRESHOLD must be a number from 0 to 100; got '$DIFF_COVERAGE_THRESHOLD'."
+            exit 1
+          fi
+          if awk -v p="$PERCENT" -v t="$DIFF_COVERAGE_THRESHOLD" 'BEGIN { exit !(p + 0 >= t + 0) }'; then
+            echo "Changed-line coverage ${PERCENT}% meets the ${DIFF_COVERAGE_THRESHOLD}% threshold."
+          else
+            echo "::error title=Changed-line coverage too low::${PERCENT}% of the changed lines are covered; ${DIFF_COVERAGE_THRESHOLD}% is required. See the coverage summary for the uncovered lines."
+            exit 1
+          fi

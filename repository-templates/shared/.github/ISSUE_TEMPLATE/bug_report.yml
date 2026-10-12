@@ -1,0 +1,37 @@
+name: Bug report
+description: Something does not work as documented.
+labels: [ "bug" ]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: What you did, what you expected, and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps to reproduce
+      description: A minimal code sample or list of steps.
+      render: csharp
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: The package or application version, or the commit you built from.
+      placeholder: "1.2.3"
+    validations:
+      required: false
+  - type: input
+    id: runtime
+    attributes:
+      label: .NET version and operating system
+      placeholder: ".NET 10.0.1 on Ubuntu 24.04"
+  - type: textarea
+    id: logs
+    attributes:
+      label: Exception or log output
+      render: text
