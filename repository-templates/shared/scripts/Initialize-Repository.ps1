@@ -7,13 +7,13 @@
     Replaces the template's placeholder names, read from scripts/template.json, in every tracked text file and in
     file and directory names:
 
-        productToken     ->  the product part of -Name (for example "Orders" for "Ploch.Orders"). Where the token
-                             is directly followed by an identifier character, as in "TemplateAppDbContext", the
-                             product is used without its dots ("Text.Slugs" -> "TextSlugsDbContext"), so a
-                             multi-segment name still produces valid C# identifiers.
-        kebab-case form  ->  the product in kebab case, for command and file names: "template-app" becomes
-                             "text-slugs" for "Ploch.Text.Slugs".
-        repositoryToken  ->  -RepositoryName
+        productPlaceholder    ->  the product part of -Name (for example "Orders" for "Ploch.Orders"). Where the
+                                  placeholder is directly followed by an identifier character, as in
+                                  "TemplateAppDbContext", the product is used without its dots ("Text.Slugs" ->
+                                  "TextSlugsDbContext"), so a multi-segment name still produces valid C# identifiers.
+        kebab-case form       ->  the product in kebab case, for command and file names: "template-app" becomes
+                                  "text-slugs" for "Ploch.Text.Slugs".
+        repositoryPlaceholder ->  -RepositoryName
 
     It also removes the template-only sections of README.md (between "<!-- template-only:start -->" and
     "<!-- template-only:end -->"), then deletes the template-only files: this script, scripts/template.json and
@@ -82,10 +82,10 @@ if (-not (Test-Path -LiteralPath $templateConfigPath)) {
     return
 }
 $templateConfig = Get-Content -LiteralPath $templateConfigPath -Raw | ConvertFrom-Json
-$ProductToken = $templateConfig.productToken
-$RepositoryToken = $templateConfig.repositoryToken
+$ProductToken = $templateConfig.productPlaceholder
+$RepositoryToken = $templateConfig.repositoryPlaceholder
 if (-not $ProductToken -or -not $RepositoryToken) {
-    throw "[Initialize-Repository] $templateConfigPath must define productToken and repositoryToken."
+    throw "[Initialize-Repository] $templateConfigPath must define productPlaceholder and repositoryPlaceholder."
 }
 
 if (-not $RepositoryName) {
@@ -219,7 +219,7 @@ function Add-PlannedChange([string] $Kind, [string] $Target, [string] $Action, [
 #    rewritten nor renamed.
 $changeLogEntries = @($trackedFiles | Where-Object { $_ -like 'change-log/*.md' -and $_ -ne 'change-log/README.md' })
 foreach ($entry in $changeLogEntries) {
-    Add-PlannedChange 'Delete' $entry 'Delete template change-log entry' @{ Paths = @($entry) }
+    Add-PlannedChange -Kind 'Delete' -Target $entry -Action 'Delete template change-log entry' -Data @{ Paths = @($entry) }
 }
 $trackedFiles = @($trackedFiles | Where-Object { $_ -notin $changeLogEntries })
 
@@ -250,7 +250,7 @@ foreach ($file in $trackedFiles) {
         continue
     }
 
-    Add-PlannedChange 'Write' $file 'Replace template placeholders' @{ FullPath = $fullPath; Content = $updated; HasBom = $hasBom }
+    Add-PlannedChange -Kind 'Write' -Target $file -Action 'Replace template placeholders' -Data @{ FullPath = $fullPath; Content = $updated; HasBom = $hasBom }
 }
 
 # 3. File and directory names, deepest first so that renaming a directory never invalidates a pending path.
@@ -270,14 +270,14 @@ foreach ($path in $pathsToRename) {
     $newLeaf = Convert-TemplateToken $leaf
     $parent = Split-Path $path -Parent
     $newPath = if ($parent) { "$parent/$newLeaf" } else { $newLeaf }
-    Add-PlannedChange 'Rename' $path "Rename to $newLeaf" @{ NewPath = $newPath }
+    Add-PlannedChange -Kind 'Rename' -Target $path -Action "Rename to $newLeaf" -Data @{ NewPath = $newPath }
 }
 
 # 4. The template-only files, including this script: a repository is initialised exactly once. One change for the
 #    whole set, because deleting only some of them would leave tooling that cannot resume.
 $present = @($templateOnlyFiles | Where-Object { Test-Path -LiteralPath $_ })
 if (-not $KeepScript -and $present.Count -gt 0) {
-    Add-PlannedChange 'Delete' ($present -join ', ') 'Delete template-only files' @{ Paths = $present }
+    Add-PlannedChange -Kind 'Delete' -Target ($present -join ', ') -Action 'Delete template-only files' -Data @{ Paths = $present }
 }
 
 # Ask about every change before making any. -WhatIf lists them all; -Confirm stops asking at the first "No", since

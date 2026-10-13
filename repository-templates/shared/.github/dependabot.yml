@@ -16,6 +16,11 @@ updates:
           - "Roslynator.*"
           - "SonarAnalyzer.*"
           - "StyleCop.*"
+      # Spectre.Console.Testing implements Spectre.Console's interfaces, so all three packages must move together:
+      # 0.57 added IAnsiConsole.WriteAnsi, which TestConsole 0.54 does not implement.
+      spectre:
+        patterns:
+          - "Spectre.Console*"
       testing:
         patterns:
           - "AutoFixture*"

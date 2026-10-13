@@ -59,8 +59,8 @@ jobs:
         working-directory: ${{ env.BOOTSTRAP_DIR }}
         run: |
           set -euo pipefail
-          product_token=$(jq -r .productToken "$GITHUB_WORKSPACE/scripts/template.json")
-          repository_token=$(jq -r .repositoryToken "$GITHUB_WORKSPACE/scripts/template.json")
+          product_token=$(jq -r .productPlaceholder "$GITHUB_WORKSPACE/scripts/template.json")
+          repository_token=$(jq -r .repositoryPlaceholder "$GITHUB_WORKSPACE/scripts/template.json")
           kebab_token=$(echo "$product_token" | sed -E 's/([a-z0-9])([A-Z])/\1-\2/g' | tr '[:upper:]' '[:lower:]')
           if git grep -n -I -e "$product_token" -e "$repository_token" -e "$kebab_token"; then
             echo "::error title=Template tokens left behind::Initialize-Repository.ps1 did not replace every template token."
